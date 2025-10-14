@@ -113,7 +113,11 @@ public class AuthServiceImpl implements AuthService {
                     .tipoUsuario(usuario.getTipoUsuario().name())
                     .build();
 
+        } catch (InvalidCredentialsException e) {
+            // Re-lanzar excepciones de credenciales (incluyendo cuenta inactiva/bloqueada)
+            throw e;
         } catch (Exception e) {
+            // Capturar otras excepciones de autenticación
             throw new InvalidCredentialsException("Credenciales inválidas");
         }
     }
