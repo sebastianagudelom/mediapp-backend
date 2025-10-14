@@ -2,6 +2,9 @@ package com.mediapp.citasbackend.services.implementation;
 
 import com.mediapp.citasbackend.entities.Paciente;
 import com.mediapp.citasbackend.entities.Usuario;
+import com.mediapp.citasbackend.exceptions.InvalidDataException;
+import com.mediapp.citasbackend.exceptions.ResourceAlreadyExistsException;
+import com.mediapp.citasbackend.exceptions.ResourceNotFoundException;
 import com.mediapp.citasbackend.repositories.PacienteRepository;
 import com.mediapp.citasbackend.services.interfaces.PacienteService;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +27,13 @@ public class PacienteServiceImpl implements PacienteService {
         
         // Verificar que el usuario no esté ya asociado a otro paciente
         if (pacienteRepository.existsByUsuario_IdUsuario(paciente.getUsuario().getIdUsuario())) {
-            throw new IllegalArgumentException(
-                "El usuario ya está asociado a un perfil de paciente"
-            );
+            throw new ResourceAlreadyExistsException("El usuario ya está asociado a un perfil de paciente");
         }
         
         // Verificar que el número de identificación sea único (si se proporciona)
         if (paciente.getNumeroIdentificacion() != null && !paciente.getNumeroIdentificacion().isEmpty()) {
             if (pacienteRepository.existsByNumeroIdentificacion(paciente.getNumeroIdentificacion())) {
-                throw new IllegalArgumentException(
-                    "El número de identificación ya está registrado: " + paciente.getNumeroIdentificacion()
-                );
+                throw new ResourceAlreadyExistsException("Paciente", "número de identificación", paciente.getNumeroIdentificacion());
             }
         }
         
@@ -44,7 +43,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public Paciente actualizarPaciente(Integer id, Paciente paciente) {
         Paciente pacienteExistente = pacienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente", "ID", id));
 
         validarPaciente(paciente);
 
@@ -52,9 +51,7 @@ public class PacienteServiceImpl implements PacienteService {
         if (paciente.getNumeroIdentificacion() != null && !paciente.getNumeroIdentificacion().isEmpty()) {
             if (!paciente.getNumeroIdentificacion().equals(pacienteExistente.getNumeroIdentificacion())) {
                 if (!identificacionEsUnica(paciente.getNumeroIdentificacion(), id)) {
-                    throw new IllegalArgumentException(
-                        "El número de identificación ya está registrado: " + paciente.getNumeroIdentificacion()
-                    );
+                    throw new ResourceAlreadyExistsException("Paciente", "número de identificación", paciente.getNumeroIdentificacion());
                 }
             }
         }
@@ -75,7 +72,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public void eliminarPaciente(Integer id) {
         if (!pacienteRepository.existsById(id)) {
-            throw new IllegalArgumentException("Paciente no encontrado con ID: " + id);
+            throw new ResourceNotFoundException("Paciente", "ID", id);
         }
         pacienteRepository.deleteById(id);
     }
@@ -96,7 +93,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public Optional<Paciente> obtenerPacientePorUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
+            throw new InvalidDataException("El usuario no puede ser nulo");
         }
         return pacienteRepository.findByUsuario(usuario);
     }
@@ -105,7 +102,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public Optional<Paciente> obtenerPacientePorUsuarioId(Integer idUsuario) {
         if (idUsuario == null) {
-            throw new IllegalArgumentException("El ID del usuario no puede ser nulo");
+            throw new InvalidDataException("El ID del usuario no puede ser nulo");
         }
         return pacienteRepository.findByUsuario_IdUsuario(idUsuario);
     }
@@ -123,7 +120,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public Optional<Paciente> obtenerPacientePorNumeroIdentificacion(String numeroIdentificacion) {
         if (numeroIdentificacion == null || numeroIdentificacion.trim().isEmpty()) {
-            throw new IllegalArgumentException("El número de identificación no puede estar vacío");
+            throw new InvalidDataException("El número de identificación no puede estar vacío");
         }
         return pacienteRepository.findByNumeroIdentificacion(numeroIdentificacion);
     }
@@ -141,7 +138,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> obtenerPacientesPorTipoSangre(String tipoSangre) {
         if (tipoSangre == null || tipoSangre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El tipo de sangre no puede estar vacío");
+            throw new InvalidDataException("El tipo de sangre no puede estar vacío");
         }
         return pacienteRepository.findByTipoSangre(tipoSangre);
     }
@@ -162,7 +159,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> buscarPacientesPorNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return pacienteRepository.buscarPacientesPorNombre(nombre);
     }
@@ -171,7 +168,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> buscarPacientesActivosPorNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return pacienteRepository.buscarPacientesActivosPorNombre(nombre);
     }
@@ -180,7 +177,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public Optional<Paciente> obtenerPacientePorEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("El email no puede estar vacío");
+            throw new InvalidDataException("El email no puede estar vacío");
         }
         return pacienteRepository.findByEmail(email);
     }
@@ -189,7 +186,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> obtenerPacientesPorCiudad(String ciudad) {
         if (ciudad == null || ciudad.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ciudad no puede estar vacía");
+            throw new InvalidDataException("La ciudad no puede estar vacía");
         }
         return pacienteRepository.findPacientesByCiudad(ciudad);
     }
@@ -198,7 +195,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> obtenerPacientesPorPais(String pais) {
         if (pais == null || pais.trim().isEmpty()) {
-            throw new IllegalArgumentException("El país no puede estar vacío");
+            throw new InvalidDataException("El país no puede estar vacío");
         }
         return pacienteRepository.findPacientesByPais(pais);
     }
@@ -225,7 +222,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> buscarPacientesPorAlergia(String alergia) {
         if (alergia == null || alergia.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return pacienteRepository.buscarPacientesPorAlergia(alergia);
     }
@@ -234,7 +231,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> buscarPacientesPorEnfermedad(String enfermedad) {
         if (enfermedad == null || enfermedad.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return pacienteRepository.buscarPacientesPorEnfermedad(enfermedad);
     }
@@ -243,7 +240,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> buscarPacientesPorMedicamento(String medicamento) {
         if (medicamento == null || medicamento.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return pacienteRepository.buscarPacientesPorMedicamento(medicamento);
     }
@@ -288,7 +285,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public Long contarPacientesPorTipoSangre(String tipoSangre) {
         if (tipoSangre == null || tipoSangre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El tipo de sangre no puede estar vacío");
+            throw new InvalidDataException("El tipo de sangre no puede estar vacío");
         }
         return pacienteRepository.contarPacientesPorTipoSangre(tipoSangre);
     }
@@ -297,7 +294,7 @@ public class PacienteServiceImpl implements PacienteService {
     @Transactional(readOnly = true)
     public List<Paciente> obtenerPacientesPorGenero(Usuario.Genero genero) {
         if (genero == null) {
-            throw new IllegalArgumentException("El género no puede ser nulo");
+            throw new InvalidDataException("El género no puede ser nulo");
         }
         return pacienteRepository.findPacientesByGenero(genero);
     }
@@ -335,30 +332,30 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public void validarPaciente(Paciente paciente) {
         if (paciente == null) {
-            throw new IllegalArgumentException("El paciente no puede ser nulo");
+            throw new InvalidDataException("El paciente no puede ser nulo");
         }
 
         if (paciente.getUsuario() == null) {
-            throw new IllegalArgumentException("El usuario es obligatorio");
+            throw new InvalidDataException("El usuario es obligatorio");
         }
 
         // Validar número de identificación (si se proporciona)
         if (paciente.getNumeroIdentificacion() != null && !paciente.getNumeroIdentificacion().trim().isEmpty()) {
             if (paciente.getNumeroIdentificacion().length() > 50) {
-                throw new IllegalArgumentException("El número de identificación no puede exceder 50 caracteres");
+                throw new InvalidDataException("El número de identificación no puede exceder 50 caracteres");
             }
         }
 
         // Validar tipo de sangre (si se proporciona)
         if (paciente.getTipoSangre() != null && !paciente.getTipoSangre().trim().isEmpty()) {
             if (paciente.getTipoSangre().length() > 5) {
-                throw new IllegalArgumentException("El tipo de sangre no puede exceder 5 caracteres");
+                throw new InvalidDataException("El tipo de sangre no puede exceder 5 caracteres");
             }
             
             // Validar formato de tipo de sangre (opcional pero recomendado)
             String tipoSangre = paciente.getTipoSangre().toUpperCase().trim();
             if (!tipoSangre.matches("^(A|B|AB|O)[+-]$")) {
-                throw new IllegalArgumentException(
+                throw new InvalidDataException(
                     "El tipo de sangre debe tener un formato válido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
                 );
             }
@@ -366,35 +363,35 @@ public class PacienteServiceImpl implements PacienteService {
 
         // Validar longitud de alergias (si se proporciona)
         if (paciente.getAlergias() != null && paciente.getAlergias().length() > 5000) {
-            throw new IllegalArgumentException("Las alergias no pueden exceder 5000 caracteres");
+            throw new InvalidDataException("Las alergias no pueden exceder 5000 caracteres");
         }
 
         // Validar longitud de enfermedades crónicas (si se proporciona)
         if (paciente.getEnfermedadesCronicas() != null && paciente.getEnfermedadesCronicas().length() > 5000) {
-            throw new IllegalArgumentException("Las enfermedades crónicas no pueden exceder 5000 caracteres");
+            throw new InvalidDataException("Las enfermedades crónicas no pueden exceder 5000 caracteres");
         }
 
         // Validar longitud de medicamentos actuales (si se proporciona)
         if (paciente.getMedicamentosActuales() != null && paciente.getMedicamentosActuales().length() > 5000) {
-            throw new IllegalArgumentException("Los medicamentos actuales no pueden exceder 5000 caracteres");
+            throw new InvalidDataException("Los medicamentos actuales no pueden exceder 5000 caracteres");
         }
 
         // Validar contacto de emergencia (si se proporciona)
         if (paciente.getContactoEmergencia() != null && !paciente.getContactoEmergencia().trim().isEmpty()) {
             if (paciente.getContactoEmergencia().length() > 100) {
-                throw new IllegalArgumentException("El contacto de emergencia no puede exceder 100 caracteres");
+                throw new InvalidDataException("El contacto de emergencia no puede exceder 100 caracteres");
             }
         }
 
         // Validar teléfono de emergencia (si se proporciona)
         if (paciente.getTelefonoEmergencia() != null && !paciente.getTelefonoEmergencia().trim().isEmpty()) {
             if (paciente.getTelefonoEmergencia().length() > 20) {
-                throw new IllegalArgumentException("El teléfono de emergencia no puede exceder 20 caracteres");
+                throw new InvalidDataException("El teléfono de emergencia no puede exceder 20 caracteres");
             }
             
             // Validación básica de formato de teléfono (solo números, espacios, guiones, paréntesis, +)
             if (!paciente.getTelefonoEmergencia().matches("^[0-9\\s\\-\\(\\)\\+]+$")) {
-                throw new IllegalArgumentException(
+                throw new InvalidDataException(
                     "El teléfono de emergencia solo puede contener números, espacios, guiones, paréntesis y el símbolo +"
                 );
             }
@@ -403,7 +400,7 @@ public class PacienteServiceImpl implements PacienteService {
         // Validar que si hay teléfono de emergencia, también haya contacto de emergencia
         if (paciente.getTelefonoEmergencia() != null && !paciente.getTelefonoEmergencia().trim().isEmpty()) {
             if (paciente.getContactoEmergencia() == null || paciente.getContactoEmergencia().trim().isEmpty()) {
-                throw new IllegalArgumentException(
+                throw new InvalidDataException(
                     "Si proporciona un teléfono de emergencia, debe proporcionar también un contacto de emergencia"
                 );
             }

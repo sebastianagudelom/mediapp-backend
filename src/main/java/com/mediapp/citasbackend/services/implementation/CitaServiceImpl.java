@@ -3,6 +3,9 @@ package com.mediapp.citasbackend.services.implementation;
 import com.mediapp.citasbackend.entities.Cita;
 import com.mediapp.citasbackend.entities.Medico;
 import com.mediapp.citasbackend.entities.Paciente;
+import com.mediapp.citasbackend.exceptions.BusinessRuleException;
+import com.mediapp.citasbackend.exceptions.InvalidDataException;
+import com.mediapp.citasbackend.exceptions.ResourceNotFoundException;
 import com.mediapp.citasbackend.repositories.CitaRepository;
 import com.mediapp.citasbackend.services.interfaces.CitaService;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +36,7 @@ public class CitaServiceImpl implements CitaService {
                 cita.getFechaCita(),
                 cita.getHoraCita()
         )) {
-            throw new IllegalArgumentException(
-                "El médico ya tiene una cita programada en esa fecha y hora"
-            );
+            throw new BusinessRuleException("El médico ya tiene una cita programada en esa fecha y hora");
         }
         
         return citaRepository.save(cita);
@@ -44,7 +45,7 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public Cita actualizarCita(Integer id, Cita cita) {
         Cita citaExistente = citaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cita", "ID", id));
 
         validarCita(cita);
         validarFechaCita(cita.getFechaCita(), cita.getHoraCita());
@@ -63,9 +64,7 @@ public class CitaServiceImpl implements CitaService {
 
             // Verificar que el conflicto no sea con la misma cita que estamos actualizando
             if (citaConflicto.isPresent() && !citaConflicto.get().getIdCita().equals(id)) {
-                throw new IllegalArgumentException(
-                    "El médico ya tiene una cita programada en esa fecha y hora"
-                );
+                throw new BusinessRuleException("El médico ya tiene una cita programada en esa fecha y hora");
             }
         }
 
@@ -85,7 +84,7 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public void eliminarCita(Integer id) {
         if (!citaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Cita no encontrada con ID: " + id);
+            throw new ResourceNotFoundException("Cita", "ID", id);
         }
         citaRepository.deleteById(id);
     }
@@ -106,7 +105,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorPaciente(Paciente paciente) {
         if (paciente == null) {
-            throw new IllegalArgumentException("El paciente no puede ser nulo");
+            throw new InvalidDataException("El paciente no puede ser nulo");
         }
         return citaRepository.findByPaciente(paciente);
     }
@@ -115,7 +114,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorPacienteId(Integer idPaciente) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         return citaRepository.findByPaciente_IdPaciente(idPaciente);
     }
@@ -124,10 +123,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorPacienteYEstado(Integer idPaciente, Cita.Estado estado) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.findByPaciente_IdPacienteAndEstado(idPaciente, estado);
     }
@@ -136,7 +135,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasProgramadasPorPaciente(Integer idPaciente) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         return citaRepository.findCitasProgramadasByPaciente(idPaciente);
     }
@@ -145,7 +144,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorMedico(Medico medico) {
         if (medico == null) {
-            throw new IllegalArgumentException("El médico no puede ser nulo");
+            throw new InvalidDataException("El médico no puede ser nulo");
         }
         return citaRepository.findByMedico(medico);
     }
@@ -154,7 +153,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorMedicoId(Integer idMedico) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         return citaRepository.findByMedico_IdMedico(idMedico);
     }
@@ -163,10 +162,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorMedicoYEstado(Integer idMedico, Cita.Estado estado) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.findByMedico_IdMedicoAndEstado(idMedico, estado);
     }
@@ -175,7 +174,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasProgramadasPorMedico(Integer idMedico) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         return citaRepository.findCitasProgramadasByMedico(idMedico);
     }
@@ -184,7 +183,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorEstado(Cita.Estado estado) {
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.findByEstado(estado);
     }
@@ -193,7 +192,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorFecha(LocalDate fecha) {
         if (fecha == null) {
-            throw new IllegalArgumentException("La fecha no puede ser nula");
+            throw new InvalidDataException("La fecha no puede ser nula");
         }
         return citaRepository.findByFechaCita(fecha);
     }
@@ -202,10 +201,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorMedicoYFecha(Integer idMedico, LocalDate fecha) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (fecha == null) {
-            throw new IllegalArgumentException("La fecha no puede ser nula");
+            throw new InvalidDataException("La fecha no puede ser nula");
         }
         return citaRepository.findCitasByMedicoAndFecha(idMedico, fecha);
     }
@@ -214,10 +213,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorPacienteYFecha(Integer idPaciente, LocalDate fecha) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (fecha == null) {
-            throw new IllegalArgumentException("La fecha no puede ser nula");
+            throw new InvalidDataException("La fecha no puede ser nula");
         }
         return citaRepository.findCitasByPacienteAndFecha(idPaciente, fecha);
     }
@@ -226,10 +225,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasEnRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         if (fechaInicio == null || fechaFin == null) {
-            throw new IllegalArgumentException("Las fechas de inicio y fin no pueden ser nulas");
+            throw new InvalidDataException("Las fechas de inicio y fin no pueden ser nulas");
         }
         if (fechaInicio.isAfter(fechaFin)) {
-            throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
+            throw new InvalidDataException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
         }
         return citaRepository.findCitasEnRangoFechas(fechaInicio, fechaFin);
     }
@@ -238,13 +237,13 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorMedicoEnRangoFechas(Integer idMedico, LocalDate fechaInicio, LocalDate fechaFin) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (fechaInicio == null || fechaFin == null) {
-            throw new IllegalArgumentException("Las fechas de inicio y fin no pueden ser nulas");
+            throw new InvalidDataException("Las fechas de inicio y fin no pueden ser nulas");
         }
         if (fechaInicio.isAfter(fechaFin)) {
-            throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
+            throw new InvalidDataException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
         }
         return citaRepository.findCitasByMedicoEnRangoFechas(idMedico, fechaInicio, fechaFin);
     }
@@ -253,13 +252,13 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorPacienteEnRangoFechas(Integer idPaciente, LocalDate fechaInicio, LocalDate fechaFin) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (fechaInicio == null || fechaFin == null) {
-            throw new IllegalArgumentException("Las fechas de inicio y fin no pueden ser nulas");
+            throw new InvalidDataException("Las fechas de inicio y fin no pueden ser nulas");
         }
         if (fechaInicio.isAfter(fechaFin)) {
-            throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
+            throw new InvalidDataException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
         }
         return citaRepository.findCitasByPacienteEnRangoFechas(idPaciente, fechaInicio, fechaFin);
     }
@@ -268,13 +267,13 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public Optional<Cita> verificarDisponibilidadMedicoFechaHora(Integer idMedico, LocalDate fecha, LocalTime hora) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (fecha == null) {
-            throw new IllegalArgumentException("La fecha no puede ser nula");
+            throw new InvalidDataException("La fecha no puede ser nula");
         }
         if (hora == null) {
-            throw new IllegalArgumentException("La hora no puede ser nula");
+            throw new InvalidDataException("La hora no puede ser nula");
         }
         return citaRepository.findCitaByMedicoFechaHora(idMedico, fecha, hora);
     }
@@ -290,7 +289,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasPorTipo(Cita.TipoCita tipoCita) {
         if (tipoCita == null) {
-            throw new IllegalArgumentException("El tipo de cita no puede ser nulo");
+            throw new InvalidDataException("El tipo de cita no puede ser nulo");
         }
         return citaRepository.findByTipoCita(tipoCita);
     }
@@ -299,7 +298,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasTelemedicinaProgramadasPorMedico(Integer idMedico) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         return citaRepository.findCitasTelemedicinaProgramadasByMedico(idMedico);
     }
@@ -308,7 +307,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerProximasCitasPorPaciente(Integer idPaciente) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         return citaRepository.findProximasCitasByPaciente(idPaciente, LocalDate.now());
     }
@@ -317,7 +316,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerProximasCitasPorMedico(Integer idMedico) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         return citaRepository.findProximasCitasByMedico(idMedico, LocalDate.now());
     }
@@ -326,7 +325,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerHistorialCitasPorPaciente(Integer idPaciente) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         return citaRepository.findHistorialCitasByPaciente(idPaciente);
     }
@@ -335,7 +334,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerHistorialCitasPorMedico(Integer idMedico) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         return citaRepository.findHistorialCitasByMedico(idMedico);
     }
@@ -344,7 +343,7 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public Long contarCitasPorEstado(Cita.Estado estado) {
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.contarCitasPorEstado(estado);
     }
@@ -353,10 +352,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public Long contarCitasPorMedicoYEstado(Integer idMedico, Cita.Estado estado) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.contarCitasByMedicoAndEstado(idMedico, estado);
     }
@@ -365,10 +364,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public Long contarCitasPorPacienteYEstado(Integer idPaciente, Cita.Estado estado) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (estado == null) {
-            throw new IllegalArgumentException("El estado no puede ser nulo");
+            throw new InvalidDataException("El estado no puede ser nulo");
         }
         return citaRepository.contarCitasByPacienteAndEstado(idPaciente, estado);
     }
@@ -377,10 +376,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasDelDiaPorMedico(Integer idMedico, LocalDate fecha) {
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (fecha == null) {
-            throw new IllegalArgumentException("La fecha no puede ser nula");
+            throw new InvalidDataException("La fecha no puede ser nula");
         }
         return citaRepository.findCitasDelDiaByMedico(idMedico, fecha);
     }
@@ -389,10 +388,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public List<Cita> obtenerCitasCanceladasEnRango(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         if (fechaInicio == null || fechaFin == null) {
-            throw new IllegalArgumentException("Las fechas de inicio y fin no pueden ser nulas");
+            throw new InvalidDataException("Las fechas de inicio y fin no pueden ser nulas");
         }
         if (fechaInicio.isAfter(fechaFin)) {
-            throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
+            throw new InvalidDataException("La fecha de inicio debe ser anterior o igual a la fecha de fin");
         }
         return citaRepository.findCitasCanceladasEnRango(fechaInicio, fechaFin);
     }
@@ -401,13 +400,13 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public boolean existeCitaEntrePacienteMedicoYFecha(Integer idPaciente, Integer idMedico, LocalDate fechaCita) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         if (fechaCita == null) {
-            throw new IllegalArgumentException("La fecha de cita no puede ser nula");
+            throw new InvalidDataException("La fecha de cita no puede ser nula");
         }
         return citaRepository.existsByPaciente_IdPacienteAndMedico_IdMedicoAndFechaCita(
                 idPaciente, idMedico, fechaCita
@@ -418,10 +417,10 @@ public class CitaServiceImpl implements CitaService {
     @Transactional(readOnly = true)
     public Optional<Cita> obtenerUltimaCitaEntrePacienteYMedico(Integer idPaciente, Integer idMedico) {
         if (idPaciente == null) {
-            throw new IllegalArgumentException("El ID del paciente no puede ser nulo");
+            throw new InvalidDataException("El ID del paciente no puede ser nulo");
         }
         if (idMedico == null) {
-            throw new IllegalArgumentException("El ID del médico no puede ser nulo");
+            throw new InvalidDataException("El ID del médico no puede ser nulo");
         }
         List<Cita> citas = citaRepository.findUltimaCitaByPacienteAndMedico(idPaciente, idMedico);
         return citas.isEmpty() ? Optional.empty() : Optional.of(citas.get(0));
@@ -433,7 +432,7 @@ public class CitaServiceImpl implements CitaService {
                 .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + id));
         
         if (cita.getEstado() == Cita.Estado.CANCELADA) {
-            throw new IllegalArgumentException("No se puede completar una cita cancelada");
+            throw new InvalidDataException("No se puede completar una cita cancelada");
         }
         
         cita.setEstado(Cita.Estado.COMPLETADA);
@@ -446,7 +445,7 @@ public class CitaServiceImpl implements CitaService {
                 .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + id));
         
         if (cita.getEstado() == Cita.Estado.COMPLETADA) {
-            throw new IllegalArgumentException("No se puede cancelar una cita completada");
+            throw new InvalidDataException("No se puede cancelar una cita completada");
         }
         
         cita.setEstado(Cita.Estado.CANCELADA);
@@ -460,11 +459,11 @@ public class CitaServiceImpl implements CitaService {
                 .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + id));
         
         if (cita.getEstado() == Cita.Estado.CANCELADA) {
-            throw new IllegalArgumentException("No se puede marcar como no asistió una cita cancelada");
+            throw new InvalidDataException("No se puede marcar como no asistió una cita cancelada");
         }
         
         if (cita.getEstado() == Cita.Estado.COMPLETADA) {
-            throw new IllegalArgumentException("No se puede marcar como no asistió una cita completada");
+            throw new InvalidDataException("No se puede marcar como no asistió una cita completada");
         }
         
         cita.setEstado(Cita.Estado.NO_ASISTIO);
@@ -474,33 +473,33 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public void validarCita(Cita cita) {
         if (cita == null) {
-            throw new IllegalArgumentException("La cita no puede ser nula");
+            throw new InvalidDataException("La cita no puede ser nula");
         }
 
         if (cita.getPaciente() == null) {
-            throw new IllegalArgumentException("El paciente es obligatorio");
+            throw new InvalidDataException("El paciente es obligatorio");
         }
 
         if (cita.getMedico() == null) {
-            throw new IllegalArgumentException("El médico es obligatorio");
+            throw new InvalidDataException("El médico es obligatorio");
         }
 
         if (cita.getFechaCita() == null) {
-            throw new IllegalArgumentException("La fecha de cita es obligatoria");
+            throw new InvalidDataException("La fecha de cita es obligatoria");
         }
 
         if (cita.getHoraCita() == null) {
-            throw new IllegalArgumentException("La hora de cita es obligatoria");
+            throw new InvalidDataException("La hora de cita es obligatoria");
         }
 
         if (cita.getTipoCita() == null) {
-            throw new IllegalArgumentException("El tipo de cita es obligatorio");
+            throw new InvalidDataException("El tipo de cita es obligatorio");
         }
 
         // Validar enlace de videollamada para telemedicina
         if (cita.getTipoCita() == Cita.TipoCita.TELEMEDICINA) {
             if (cita.getEnlaceVideollamada() == null || cita.getEnlaceVideollamada().trim().isEmpty()) {
-                throw new IllegalArgumentException("El enlace de videollamada es obligatorio para citas de telemedicina");
+                throw new InvalidDataException("El enlace de videollamada es obligatorio para citas de telemedicina");
             }
         }
     }
@@ -508,19 +507,19 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public void validarFechaCita(LocalDate fechaCita, LocalTime horaCita) {
         if (fechaCita == null || horaCita == null) {
-            throw new IllegalArgumentException("La fecha y hora de cita no pueden ser nulas");
+            throw new InvalidDataException("La fecha y hora de cita no pueden ser nulas");
         }
 
         // No permitir citas en el pasado
         LocalDateTime fechaHoraCita = LocalDateTime.of(fechaCita, horaCita);
         if (fechaHoraCita.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("No se pueden programar citas en el pasado");
+            throw new InvalidDataException("No se pueden programar citas en el pasado");
         }
 
         // Validar que no sea en un horario muy lejano (máximo 6 meses adelante)
         LocalDateTime fechaMaxima = LocalDateTime.now().plusMonths(6);
         if (fechaHoraCita.isAfter(fechaMaxima)) {
-            throw new IllegalArgumentException("No se pueden programar citas con más de 6 meses de anticipación");
+            throw new InvalidDataException("No se pueden programar citas con más de 6 meses de anticipación");
         }
     }
 }

@@ -3,6 +3,9 @@ package com.mediapp.citasbackend.services.implementation;
 import com.mediapp.citasbackend.entities.Especialidad;
 import com.mediapp.citasbackend.entities.Medico;
 import com.mediapp.citasbackend.entities.Usuario;
+import com.mediapp.citasbackend.exceptions.InvalidDataException;
+import com.mediapp.citasbackend.exceptions.ResourceAlreadyExistsException;
+import com.mediapp.citasbackend.exceptions.ResourceNotFoundException;
 import com.mediapp.citasbackend.repositories.MedicoRepository;
 import com.mediapp.citasbackend.services.interfaces.MedicoService;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +30,13 @@ public class MedicoServiceImpl implements MedicoService {
         
         // Verificar que el usuario no esté ya asociado a otro médico
         if (medicoRepository.existsByUsuario_IdUsuario(medico.getUsuario().getIdUsuario())) {
-            throw new IllegalArgumentException(
-                "El usuario ya está asociado a un perfil de médico"
-            );
+            throw new ResourceAlreadyExistsException("El usuario ya está asociado a un perfil de médico");
         }
         
         // Verificar que el número de licencia sea único (si se proporciona)
         if (medico.getNumeroLicencia() != null && !medico.getNumeroLicencia().isEmpty()) {
             if (medicoRepository.existsByNumeroLicencia(medico.getNumeroLicencia())) {
-                throw new IllegalArgumentException(
-                    "El número de licencia ya está registrado: " + medico.getNumeroLicencia()
-                );
+                throw new ResourceAlreadyExistsException("Médico", "número de licencia", medico.getNumeroLicencia());
             }
         }
         
@@ -47,7 +46,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Override
     public Medico actualizarMedico(Integer id, Medico medico) {
         Medico medicoExistente = medicoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Médico", "ID", id));
 
         validarMedico(medico);
 
@@ -55,9 +54,7 @@ public class MedicoServiceImpl implements MedicoService {
         if (medico.getNumeroLicencia() != null && !medico.getNumeroLicencia().isEmpty()) {
             if (!medico.getNumeroLicencia().equals(medicoExistente.getNumeroLicencia())) {
                 if (!licenciaEsUnica(medico.getNumeroLicencia(), id)) {
-                    throw new IllegalArgumentException(
-                        "El número de licencia ya está registrado: " + medico.getNumeroLicencia()
-                    );
+                    throw new ResourceAlreadyExistsException("Médico", "número de licencia", medico.getNumeroLicencia());
                 }
             }
         }
@@ -79,7 +76,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Override
     public void eliminarMedico(Integer id) {
         if (!medicoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Médico no encontrado con ID: " + id);
+            throw new ResourceNotFoundException("Médico", "ID", id);
         }
         medicoRepository.deleteById(id);
     }
@@ -100,7 +97,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public Optional<Medico> obtenerMedicoPorUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
+            throw new InvalidDataException("El usuario no puede ser nulo");
         }
         return medicoRepository.findByUsuario(usuario);
     }
@@ -109,7 +106,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public Optional<Medico> obtenerMedicoPorUsuarioId(Integer idUsuario) {
         if (idUsuario == null) {
-            throw new IllegalArgumentException("El ID del usuario no puede ser nulo");
+            throw new InvalidDataException("El ID del usuario no puede ser nulo");
         }
         return medicoRepository.findByUsuario_IdUsuario(idUsuario);
     }
@@ -127,7 +124,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public Optional<Medico> obtenerMedicoPorNumeroLicencia(String numeroLicencia) {
         if (numeroLicencia == null || numeroLicencia.trim().isEmpty()) {
-            throw new IllegalArgumentException("El número de licencia no puede estar vacío");
+            throw new InvalidDataException("El número de licencia no puede estar vacío");
         }
         return medicoRepository.findByNumeroLicencia(numeroLicencia);
     }
@@ -145,7 +142,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEspecialidad(Especialidad especialidad) {
         if (especialidad == null) {
-            throw new IllegalArgumentException("La especialidad no puede ser nula");
+            throw new InvalidDataException("La especialidad no puede ser nula");
         }
         return medicoRepository.findByEspecialidad(especialidad);
     }
@@ -154,7 +151,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEspecialidadId(Integer idEspecialidad) {
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.findByEspecialidad_IdEspecialidad(idEspecialidad);
     }
@@ -163,7 +160,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosVerificadosPorEspecialidad(Integer idEspecialidad) {
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.findMedicosVerificadosByEspecialidad(idEspecialidad);
     }
@@ -172,7 +169,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorEstadoVerificacion(Medico.EstadoVerificacion estadoVerificacion) {
         if (estadoVerificacion == null) {
-            throw new IllegalArgumentException("El estado de verificación no puede ser nulo");
+            throw new InvalidDataException("El estado de verificación no puede ser nulo");
         }
         return medicoRepository.findByEstadoVerificacion(estadoVerificacion);
     }
@@ -199,7 +196,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorHospital(String hospitalAfiliado) {
         if (hospitalAfiliado == null || hospitalAfiliado.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del hospital no puede estar vacío");
+            throw new InvalidDataException("El nombre del hospital no puede estar vacío");
         }
         return medicoRepository.findByHospitalAfiliado(hospitalAfiliado);
     }
@@ -208,7 +205,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosConExperienciaMinima(Integer aniosMinimos) {
         if (aniosMinimos == null || aniosMinimos < 0) {
-            throw new IllegalArgumentException("Los años mínimos deben ser mayores o iguales a cero");
+            throw new InvalidDataException("Los años mínimos deben ser mayores o iguales a cero");
         }
         return medicoRepository.findMedicosConExperienciaMinima(aniosMinimos);
     }
@@ -217,13 +214,13 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorRangoExperiencia(Integer minAnos, Integer maxAnos) {
         if (minAnos == null || maxAnos == null) {
-            throw new IllegalArgumentException("Los años mínimos y máximos no pueden ser nulos");
+            throw new InvalidDataException("Los años mínimos y máximos no pueden ser nulos");
         }
         if (minAnos < 0 || maxAnos < 0) {
-            throw new IllegalArgumentException("Los años no pueden ser negativos");
+            throw new InvalidDataException("Los años no pueden ser negativos");
         }
         if (minAnos > maxAnos) {
-            throw new IllegalArgumentException("Los años mínimos no pueden ser mayores que los máximos");
+            throw new InvalidDataException("Los años mínimos no pueden ser mayores que los máximos");
         }
         return medicoRepository.findMedicosPorRangoExperiencia(minAnos, maxAnos);
     }
@@ -232,11 +229,11 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosConCalificacionMinima(BigDecimal calificacionMinima) {
         if (calificacionMinima == null) {
-            throw new IllegalArgumentException("La calificación mínima no puede ser nula");
+            throw new InvalidDataException("La calificación mínima no puede ser nula");
         }
         if (calificacionMinima.compareTo(BigDecimal.ZERO) < 0 || 
             calificacionMinima.compareTo(new BigDecimal("5.0")) > 0) {
-            throw new IllegalArgumentException("La calificación debe estar entre 0 y 5");
+            throw new InvalidDataException("La calificación debe estar entre 0 y 5");
         }
         return medicoRepository.findMedicosConCalificacionMinima(calificacionMinima);
     }
@@ -251,7 +248,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosMejorCalificadosPorEspecialidad(Integer idEspecialidad) {
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.findMedicosMejorCalificadosByEspecialidad(idEspecialidad);
     }
@@ -266,7 +263,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> buscarMedicosPorNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return medicoRepository.buscarMedicosPorNombre(nombre);
     }
@@ -275,7 +272,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> buscarMedicosActivosPorNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return medicoRepository.buscarMedicosActivosPorNombre(nombre);
     }
@@ -284,7 +281,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorCiudad(String ciudad) {
         if (ciudad == null || ciudad.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ciudad no puede estar vacía");
+            throw new InvalidDataException("La ciudad no puede estar vacía");
         }
         return medicoRepository.findMedicosByCiudad(ciudad);
     }
@@ -293,10 +290,10 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosPorCiudadYEspecialidad(String ciudad, Integer idEspecialidad) {
         if (ciudad == null || ciudad.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ciudad no puede estar vacía");
+            throw new InvalidDataException("La ciudad no puede estar vacía");
         }
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.findMedicosByCiudadAndEspecialidad(ciudad, idEspecialidad);
     }
@@ -305,7 +302,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public Long contarMedicosPorEspecialidad(Integer idEspecialidad) {
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.contarMedicosByEspecialidad(idEspecialidad);
     }
@@ -332,7 +329,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public Optional<Medico> obtenerMedicoPorEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("El email no puede estar vacío");
+            throw new InvalidDataException("El email no puede estar vacío");
         }
         return medicoRepository.findByEmail(email);
     }
@@ -353,7 +350,7 @@ public class MedicoServiceImpl implements MedicoService {
     @Transactional(readOnly = true)
     public List<Medico> obtenerMedicosDisponiblesPorEspecialidad(Integer idEspecialidad) {
         if (idEspecialidad == null) {
-            throw new IllegalArgumentException("El ID de la especialidad no puede ser nulo");
+            throw new InvalidDataException("El ID de la especialidad no puede ser nulo");
         }
         return medicoRepository.findMedicosDisponiblesByEspecialidad(idEspecialidad);
     }
@@ -392,12 +389,12 @@ public class MedicoServiceImpl implements MedicoService {
                 .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado con ID: " + id));
         
         if (calificacion == null) {
-            throw new IllegalArgumentException("La calificación no puede ser nula");
+            throw new InvalidDataException("La calificación no puede ser nula");
         }
         
         if (calificacion.compareTo(BigDecimal.ZERO) < 0 || 
             calificacion.compareTo(new BigDecimal("5.0")) > 0) {
-            throw new IllegalArgumentException("La calificación debe estar entre 0 y 5");
+            throw new InvalidDataException("La calificación debe estar entre 0 y 5");
         }
         
         medico.setCalificacionPromedio(calificacion);
@@ -408,27 +405,27 @@ public class MedicoServiceImpl implements MedicoService {
     @Override
     public void validarMedico(Medico medico) {
         if (medico == null) {
-            throw new IllegalArgumentException("El médico no puede ser nulo");
+            throw new InvalidDataException("El médico no puede ser nulo");
         }
 
         if (medico.getUsuario() == null) {
-            throw new IllegalArgumentException("El usuario es obligatorio");
+            throw new InvalidDataException("El usuario es obligatorio");
         }
 
         // Validar número de licencia (si se proporciona)
         if (medico.getNumeroLicencia() != null && !medico.getNumeroLicencia().trim().isEmpty()) {
             if (medico.getNumeroLicencia().length() > 50) {
-                throw new IllegalArgumentException("El número de licencia no puede exceder 50 caracteres");
+                throw new InvalidDataException("El número de licencia no puede exceder 50 caracteres");
             }
         }
 
         // Validar experiencia en años (si se proporciona)
         if (medico.getExperienciaAnos() != null) {
             if (medico.getExperienciaAnos() < 0) {
-                throw new IllegalArgumentException("Los años de experiencia no pueden ser negativos");
+                throw new InvalidDataException("Los años de experiencia no pueden ser negativos");
             }
             if (medico.getExperienciaAnos() > 70) {
-                throw new IllegalArgumentException("Los años de experiencia no pueden exceder 70 años");
+                throw new InvalidDataException("Los años de experiencia no pueden exceder 70 años");
             }
         }
 
@@ -436,25 +433,25 @@ public class MedicoServiceImpl implements MedicoService {
         if (medico.getCalificacionPromedio() != null) {
             if (medico.getCalificacionPromedio().compareTo(BigDecimal.ZERO) < 0 || 
                 medico.getCalificacionPromedio().compareTo(new BigDecimal("5.0")) > 0) {
-                throw new IllegalArgumentException("La calificación promedio debe estar entre 0 y 5");
+                throw new InvalidDataException("La calificación promedio debe estar entre 0 y 5");
             }
         }
 
         // Validar longitud del resumen bio (si se proporciona)
         if (medico.getResumenBio() != null && medico.getResumenBio().length() > 5000) {
-            throw new IllegalArgumentException("El resumen biográfico no puede exceder 5000 caracteres");
+            throw new InvalidDataException("El resumen biográfico no puede exceder 5000 caracteres");
         }
 
         // Validar longitud del hospital afiliado (si se proporciona)
         if (medico.getHospitalAfiliado() != null && medico.getHospitalAfiliado().length() > 100) {
-            throw new IllegalArgumentException("El nombre del hospital no puede exceder 100 caracteres");
+            throw new InvalidDataException("El nombre del hospital no puede exceder 100 caracteres");
         }
 
         // Validar fecha de verificación (si está verificado)
         if (medico.getEstadoVerificacion() == Medico.EstadoVerificacion.VERIFICADO) {
             if (medico.getFechaVerificacion() != null && 
                 medico.getFechaVerificacion().isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("La fecha de verificación no puede ser futura");
+                throw new InvalidDataException("La fecha de verificación no puede ser futura");
             }
         }
     }

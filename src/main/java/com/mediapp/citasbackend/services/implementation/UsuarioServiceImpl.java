@@ -1,6 +1,9 @@
 package com.mediapp.citasbackend.services.implementation;
 
 import com.mediapp.citasbackend.entities.Usuario;
+import com.mediapp.citasbackend.exceptions.InvalidDataException;
+import com.mediapp.citasbackend.exceptions.ResourceAlreadyExistsException;
+import com.mediapp.citasbackend.exceptions.ResourceNotFoundException;
 import com.mediapp.citasbackend.repositories.UsuarioRepository;
 import com.mediapp.citasbackend.services.interfaces.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +26,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         
         // Validar email único
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw new ResourceAlreadyExistsException("Usuario", "email", usuario.getEmail());
         }
         
         // Validar teléfono único si se proporciona
         if (usuario.getTelefono() != null && !usuario.getTelefono().isEmpty()) {
             if (usuarioRepository.existsByTelefono(usuario.getTelefono())) {
-                throw new IllegalArgumentException("El teléfono ya está registrado");
+                throw new ResourceAlreadyExistsException("Usuario", "teléfono", usuario.getTelefono());
             }
         }
         
@@ -39,14 +42,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario actualizarUsuario(Integer id, Usuario usuario) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "ID", id));
 
         validarUsuario(usuario);
 
         // Validar email único (excepto el actual)
         if (!usuarioExistente.getEmail().equals(usuario.getEmail())) {
             if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-                throw new IllegalArgumentException("El email ya está registrado");
+                throw new ResourceAlreadyExistsException("Usuario", "email", usuario.getEmail());
             }
         }
 
@@ -54,7 +57,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuario.getTelefono() != null && !usuario.getTelefono().isEmpty()) {
             if (!usuario.getTelefono().equals(usuarioExistente.getTelefono())) {
                 if (usuarioRepository.existsByTelefono(usuario.getTelefono())) {
-                    throw new IllegalArgumentException("El teléfono ya está registrado");
+                    throw new ResourceAlreadyExistsException("Usuario", "teléfono", usuario.getTelefono());
                 }
             }
         }
@@ -84,7 +87,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void eliminarUsuario(Integer id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new IllegalArgumentException("Usuario no encontrado con ID: " + id);
+            throw new ResourceNotFoundException("Usuario", "ID", id);
         }
         usuarioRepository.deleteById(id);
     }
@@ -141,7 +144,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public List<Usuario> buscarUsuariosPorNombreOApellido(String busqueda) {
         if (busqueda == null || busqueda.trim().isEmpty()) {
-            throw new IllegalArgumentException("El término de búsqueda no puede estar vacío");
+            throw new InvalidDataException("El término de búsqueda no puede estar vacío");
         }
         return usuarioRepository.buscarPorNombreOApellido(busqueda);
     }
@@ -197,7 +200,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario activarUsuario(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "ID", id));
         usuario.setEstado(Usuario.Estado.ACTIVO);
         return usuarioRepository.save(usuario);
     }
@@ -205,7 +208,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario desactivarUsuario(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "ID", id));
         usuario.setEstado(Usuario.Estado.INACTIVO);
         return usuarioRepository.save(usuario);
     }
@@ -213,7 +216,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario bloquearUsuario(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "ID", id));
         usuario.setEstado(Usuario.Estado.BLOQUEADO);
         return usuarioRepository.save(usuario);
     }
@@ -221,36 +224,36 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void validarUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
+            throw new InvalidDataException("El usuario no puede ser nulo");
         }
 
         if (usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre es obligatorio");
+            throw new InvalidDataException("El nombre es obligatorio");
         }
 
         if (usuario.getApellido() == null || usuario.getApellido().trim().isEmpty()) {
-            throw new IllegalArgumentException("El apellido es obligatorio");
+            throw new InvalidDataException("El apellido es obligatorio");
         }
 
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("El email es obligatorio");
+            throw new InvalidDataException("El email es obligatorio");
         }
 
         // Validación básica de formato de email
         if (!usuario.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-            throw new IllegalArgumentException("El formato del email no es válido");
+            throw new InvalidDataException("El formato del email no es válido");
         }
 
         if (usuario.getContraseña() == null || usuario.getContraseña().trim().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña es obligatoria");
+            throw new InvalidDataException("La contraseña es obligatoria");
         }
 
         if (usuario.getContraseña().length() < 8) {
-            throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres");
+            throw new InvalidDataException("La contraseña debe tener al menos 8 caracteres");
         }
 
         if (usuario.getTipoUsuario() == null) {
-            throw new IllegalArgumentException("El tipo de usuario es obligatorio");
+            throw new InvalidDataException("El tipo de usuario es obligatorio");
         }
     }
 }
