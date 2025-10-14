@@ -51,8 +51,8 @@ public interface EspecialidadRepository extends JpaRepository<Especialidad, Inte
     @Query("SELECT e FROM Especialidad e ORDER BY e.nombreEspecialidad")
     List<Especialidad> findAllOrdenadas();
 
-    // Buscar especialidades con médicos asociados (asumiendo relación ManyToMany)
-    @Query("SELECT DISTINCT e FROM Especialidad e JOIN Medico m ON e MEMBER OF m.especialidades " +
+    // Buscar especialidades con médicos asociados
+    @Query("SELECT DISTINCT e FROM Especialidad e JOIN Medico m ON m.especialidad.idEspecialidad = e.idEspecialidad " +
            "WHERE e.estado = 'ACTIVA'")
     List<Especialidad> findEspecialidadesConMedicos();
 
