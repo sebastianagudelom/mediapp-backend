@@ -22,7 +22,7 @@ public class NotificacionController {
     private final NotificacionService notificacionService;
 
     /**
-     * Crear una nueva notificación
+     * crea notificaciones
      */
     @PostMapping
     public ResponseEntity<Notificacion> crearNotificacion(@RequestBody Notificacion notificacion) {
