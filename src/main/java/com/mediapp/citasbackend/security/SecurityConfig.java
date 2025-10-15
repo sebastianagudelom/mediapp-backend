@@ -1,6 +1,7 @@
 package com.mediapp.citasbackend.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "spring.security.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;

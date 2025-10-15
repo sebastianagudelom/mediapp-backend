@@ -162,7 +162,7 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Inte
 
     // Buscar notificaciones del día actual de un usuario
     @Query("SELECT n FROM Notificacion n WHERE n.usuario.idUsuario = :idUsuario " +
-           "AND DATE(n.fechaEnvio) = CURRENT_DATE " +
+           "AND CAST(n.fechaEnvio AS date) = CURRENT_DATE " +
            "ORDER BY n.fechaEnvio DESC")
     List<Notificacion> findNotificacionesDelDiaByUsuario(@Param("idUsuario") Integer idUsuario);
 
