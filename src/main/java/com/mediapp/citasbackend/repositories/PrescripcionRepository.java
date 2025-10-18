@@ -16,10 +16,10 @@ public interface PrescripcionRepository extends JpaRepository<Prescripcion, Inte
     // Buscar prescripciones de un historial médico
     List<Prescripcion> findByHistorialMedico(HistorialMedico historialMedico);
 
-    // Buscar prescripciones de un historial médico por ID
+    // Buscar prescripciones de historiales médico por ID
     List<Prescripcion> findByHistorialMedico_IdHistorial(Integer idHistorial);
 
-    // Buscar prescripciones de un paciente
+    // Busca prescripciones de un paciente
     @Query("SELECT p FROM Prescripcion p WHERE p.historialMedico.paciente.idPaciente = :idPaciente " +
            "ORDER BY p.fechaPrescripcion DESC")
     List<Prescripcion> findPrescripcionesByPaciente(@Param("idPaciente") Integer idPaciente);
