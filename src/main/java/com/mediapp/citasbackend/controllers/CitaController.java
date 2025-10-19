@@ -23,10 +23,10 @@ public class CitaController {
     private final CitaService citaService;
 
     /**
-     * Crear una nueva cita
+     * Crear nueva  cita
      */
     @PostMapping
-    public ResponseEntity<Cita> crearCita(@RequestBody Cita cita) {
+    public ResponseEntity<Cita>  crearCita(@RequestBody Cita cita) {
         try {
             Cita nuevaCita = citaService.guardarCita(cita);
             return new ResponseEntity<>(nuevaCita, HttpStatus.CREATED);
