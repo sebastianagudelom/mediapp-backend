@@ -23,7 +23,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/medicos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Médicos", description = "Gestión de médicos - registro, consulta y actualización de información profesional")
 @SecurityRequirement(name = "bearerAuth")
 public class MedicoController {

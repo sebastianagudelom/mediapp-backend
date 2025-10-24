@@ -24,7 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/prescripciones")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Prescripciones", description = "Gestión de prescripciones médicas - recetas y medicamentos")
 @SecurityRequirement(name = "bearerAuth")
 public class PrescripcionController {

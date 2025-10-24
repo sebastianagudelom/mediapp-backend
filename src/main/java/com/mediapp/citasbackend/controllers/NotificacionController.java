@@ -24,7 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/notificaciones")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Notificaciones", description = "Gestión de notificaciones - alertas y mensajes del sistema")
 @SecurityRequirement(name = "bearerAuth")
 public class NotificacionController {

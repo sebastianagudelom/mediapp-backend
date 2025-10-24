@@ -20,7 +20,7 @@ public class Paciente {
     @Schema(description = "ID único del paciente (generado automáticamente)", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
     private Integer idPaciente;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario", nullable = false, unique = true)
     @Schema(description = "Usuario asociado al paciente", required = true)
     private Usuario usuario;

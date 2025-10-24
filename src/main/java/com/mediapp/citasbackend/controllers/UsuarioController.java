@@ -21,7 +21,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Usuarios", description = "Gestión de usuarios del sistema - administración de cuentas y perfiles")
 @SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {

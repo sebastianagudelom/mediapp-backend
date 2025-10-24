@@ -24,7 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/evaluaciones")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Evaluaciones", description = "Gestión de evaluaciones y calificaciones de médicos por pacientes")
 @SecurityRequirement(name = "bearerAuth")
 public class EvaluacionController {

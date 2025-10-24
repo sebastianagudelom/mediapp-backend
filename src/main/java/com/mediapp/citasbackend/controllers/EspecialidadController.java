@@ -21,7 +21,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/especialidades")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Especialidades", description = "Gestión de especialidades médicas - catálogo de áreas de práctica médica")
 @SecurityRequirement(name = "bearerAuth")
 public class EspecialidadController {

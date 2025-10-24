@@ -23,7 +23,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/calendario-disponibilidad")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Calendario de Disponibilidad", description = "Gestión de horarios y disponibilidad de médicos para citas")
 @SecurityRequirement(name = "bearerAuth")
 public class CalendarioDisponibilidadController {

@@ -25,7 +25,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/citas")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Citas", description = "Gestión de citas médicas - crear, consultar, actualizar y cancelar citas")
 @SecurityRequirement(name = "bearerAuth")
 public class CitaController {
