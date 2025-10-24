@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Usuario;
 import com.mediapp.citasbackend.services.interfaces.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +22,22 @@ import java.util.Optional;
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Usuarios", description = "Gestión de usuarios del sistema - administración de cuentas y perfiles")
+@SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    /**
-     * Crear un nuevo usuario
-     */
     @PostMapping
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
+    @Operation(summary = "Crear nuevo usuario", description = "Registra un nuevo usuario en el sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
+            content = @Content(schema = @Schema(implementation = Usuario.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de usuario inválidos")
+    })
+    public ResponseEntity<Usuario> crearUsuario(
+        @Parameter(description = "Datos del usuario a crear", required = true)
+        @RequestBody Usuario usuario) {
         try {
             Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
             return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
@@ -31,31 +46,38 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Obtener todos los usuarios
-     */
     @GetMapping
+    @Operation(summary = "Obtener todos los usuarios", description = "Retorna listado completo de usuarios del sistema")
+    @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
         List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuario por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener usuario por ID", description = "Retorna los detalles de un usuario específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<Usuario> obtenerUsuarioPorId(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorId(id);
         return usuario.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar un usuario
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     public ResponseEntity<Usuario> actualizarUsuario(
+            @Parameter(description = "ID del usuario", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados del usuario", required = true)
             @RequestBody Usuario usuario) {
         try {
             Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
@@ -65,11 +87,15 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Eliminar un usuario
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Usuario eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<Void> eliminarUsuario(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer id) {
         try {
             usuarioService.eliminarUsuario(id);
             return ResponseEntity.noContent().build();
@@ -78,21 +104,26 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Obtener usuario por email
-     */
     @GetMapping("/email/{email}")
-    public ResponseEntity<Usuario> obtenerUsuarioPorEmail(@PathVariable String email) {
+    @Operation(summary = "Obtener usuario por email", description = "Busca un usuario por su dirección de correo electrónico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<Usuario> obtenerUsuarioPorEmail(
+        @Parameter(description = "Email del usuario", required = true, example = "usuario@ejemplo.com")
+        @PathVariable String email) {
         Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorEmail(email);
         return usuario.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Verificar si existe un email
-     */
     @GetMapping("/email/existe/{email}")
-    public ResponseEntity<Boolean> existeEmail(@PathVariable String email) {
+    @Operation(summary = "Verificar existencia de email", description = "Verifica si un email ya está registrado en el sistema")
+    @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
+    public ResponseEntity<Boolean> existeEmail(
+        @Parameter(description = "Email a verificar", required = true, example = "usuario@ejemplo.com")
+        @PathVariable String email) {
         boolean existe = usuarioService.existeEmail(email);
         return ResponseEntity.ok(existe);
     }

@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Evaluacion;
 import com.mediapp.citasbackend.services.interfaces.EvaluacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -17,15 +25,23 @@ import java.util.Optional;
 @RequestMapping("/api/evaluaciones")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Evaluaciones", description = "Gestión de evaluaciones y calificaciones de médicos por pacientes")
+@SecurityRequirement(name = "bearerAuth")
 public class EvaluacionController {
 
     private final EvaluacionService evaluacionService;
 
-    /**
-     * Crear una nueva evaluación
-     */
     @PostMapping
-    public ResponseEntity<Evaluacion> crearEvaluacion(@RequestBody Evaluacion evaluacion) {
+    @Operation(summary = "Crear nueva evaluación", 
+               description = "Registra una nueva evaluación de un médico realizada por un paciente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Evaluación creada exitosamente",
+            content = @Content(schema = @Schema(implementation = Evaluacion.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de evaluación inválidos")
+    })
+    public ResponseEntity<Evaluacion> crearEvaluacion(
+        @Parameter(description = "Datos de la evaluación a crear", required = true)
+        @RequestBody Evaluacion evaluacion) {
         try {
             Evaluacion nuevaEvaluacion = evaluacionService.guardarEvaluacion(evaluacion);
             return new ResponseEntity<>(nuevaEvaluacion, HttpStatus.CREATED);
@@ -34,31 +50,41 @@ public class EvaluacionController {
         }
     }
 
-    /**
-     * Obtener todas las evaluaciones
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las evaluaciones", 
+               description = "Retorna listado completo de evaluaciones de médicos")
+    @ApiResponse(responseCode = "200", description = "Lista de evaluaciones obtenida exitosamente")
     public ResponseEntity<List<Evaluacion>> obtenerTodasLasEvaluaciones() {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerTodasLasEvaluaciones();
         return ResponseEntity.ok(evaluaciones);
     }
 
-    /**
-     * Obtener evaluación por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Evaluacion> obtenerEvaluacionPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener evaluación por ID", 
+               description = "Retorna los detalles de una evaluación específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Evaluación encontrada"),
+        @ApiResponse(responseCode = "404", description = "Evaluación no encontrada")
+    })
+    public ResponseEntity<Evaluacion> obtenerEvaluacionPorId(
+        @Parameter(description = "ID de la evaluación", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Evaluacion> evaluacion = evaluacionService.obtenerEvaluacionPorId(id);
         return evaluacion.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar una evaluación
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar evaluación", 
+               description = "Actualiza una evaluación existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Evaluación actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Evaluación no encontrada")
+    })
     public ResponseEntity<Evaluacion> actualizarEvaluacion(
+            @Parameter(description = "ID de la evaluación", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados de la evaluación", required = true)
             @RequestBody Evaluacion evaluacion) {
         try {
             Evaluacion evaluacionActualizada = evaluacionService.actualizarEvaluacion(id, evaluacion);

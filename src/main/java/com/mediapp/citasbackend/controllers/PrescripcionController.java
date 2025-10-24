@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Prescripcion;
 import com.mediapp.citasbackend.services.interfaces.PrescripcionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -17,15 +25,23 @@ import java.util.Optional;
 @RequestMapping("/api/prescripciones")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Prescripciones", description = "Gestión de prescripciones médicas - recetas y medicamentos")
+@SecurityRequirement(name = "bearerAuth")
 public class PrescripcionController {
 
     private final PrescripcionService prescripcionService;
 
-    /**
-     * Crear una nueva prescripción
-     */
     @PostMapping
-    public ResponseEntity<Prescripcion> crearPrescripcion(@RequestBody Prescripcion prescripcion) {
+    @Operation(summary = "Crear nueva prescripción", 
+               description = "Registra una nueva prescripción médica asociada a un historial")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Prescripción creada exitosamente",
+            content = @Content(schema = @Schema(implementation = Prescripcion.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de prescripción inválidos")
+    })
+    public ResponseEntity<Prescripcion> crearPrescripcion(
+        @Parameter(description = "Datos de la prescripción a crear", required = true)
+        @RequestBody Prescripcion prescripcion) {
         try {
             Prescripcion nuevaPrescripcion = prescripcionService.guardarPrescripcion(prescripcion);
             return new ResponseEntity<>(nuevaPrescripcion, HttpStatus.CREATED);
@@ -34,29 +50,34 @@ public class PrescripcionController {
         }
     }
 
-    /**
-     * Obtener todas las prescripciones
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las prescripciones", 
+               description = "Retorna listado completo de prescripciones médicas")
+    @ApiResponse(responseCode = "200", description = "Lista de prescripciones obtenida exitosamente")
     public ResponseEntity<List<Prescripcion>> obtenerTodasLasPrescripciones() {
         List<Prescripcion> prescripciones = prescripcionService.obtenerTodasLasPrescripciones();
         return ResponseEntity.ok(prescripciones);
     }
 
-    /**
-     * Obtener todas las prescripciones ordenadas
-     */
     @GetMapping("/ordenadas")
+    @Operation(summary = "Obtener prescripciones ordenadas", 
+               description = "Retorna prescripciones ordenadas por fecha de emisión")
+    @ApiResponse(responseCode = "200", description = "Lista ordenada de prescripciones")
     public ResponseEntity<List<Prescripcion>> obtenerTodasLasPrescripcionesOrdenadas() {
         List<Prescripcion> prescripciones = prescripcionService.obtenerTodasLasPrescripcionesOrdenadas();
         return ResponseEntity.ok(prescripciones);
     }
 
-    /**
-     * Obtener prescripción por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Prescripcion> obtenerPrescripcionPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener prescripción por ID", 
+               description = "Retorna los detalles de una prescripción específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Prescripción encontrada"),
+        @ApiResponse(responseCode = "404", description = "Prescripción no encontrada")
+    })
+    public ResponseEntity<Prescripcion> obtenerPrescripcionPorId(
+        @Parameter(description = "ID de la prescripción", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Prescripcion> prescripcion = prescripcionService.obtenerPrescripcionPorId(id);
         return prescripcion.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

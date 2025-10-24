@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Especialidad;
 import com.mediapp.citasbackend.services.interfaces.EspecialidadService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +22,22 @@ import java.util.Optional;
 @RequestMapping("/api/especialidades")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Especialidades", description = "Gestión de especialidades médicas - catálogo de áreas de práctica médica")
+@SecurityRequirement(name = "bearerAuth")
 public class EspecialidadController {
 
     private final EspecialidadService especialidadService;
 
-    /**
-     * Crear una nueva especialidad
-     */
     @PostMapping
-    public ResponseEntity<Especialidad> crearEspecialidad(@RequestBody Especialidad especialidad) {
+    @Operation(summary = "Crear nueva especialidad", description = "Registra una nueva especialidad médica en el sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Especialidad creada exitosamente",
+            content = @Content(schema = @Schema(implementation = Especialidad.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de especialidad inválidos")
+    })
+    public ResponseEntity<Especialidad> crearEspecialidad(
+        @Parameter(description = "Datos de la especialidad a crear", required = true)
+        @RequestBody Especialidad especialidad) {
         try {
             Especialidad nuevaEspecialidad = especialidadService.guardarEspecialidad(especialidad);
             return new ResponseEntity<>(nuevaEspecialidad, HttpStatus.CREATED);
@@ -31,31 +46,38 @@ public class EspecialidadController {
         }
     }
 
-    /**
-     * Obtener todas las especialidades
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las especialidades", description = "Retorna catálogo completo de especialidades médicas")
+    @ApiResponse(responseCode = "200", description = "Lista de especialidades obtenida exitosamente")
     public ResponseEntity<List<Especialidad>> obtenerTodasLasEspecialidades() {
         List<Especialidad> especialidades = especialidadService.obtenerTodasLasEspecialidades();
         return ResponseEntity.ok(especialidades);
     }
 
-    /**
-     * Obtener especialidad por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Especialidad> obtenerEspecialidadPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener especialidad por ID", description = "Retorna los detalles de una especialidad específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Especialidad encontrada"),
+        @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
+    public ResponseEntity<Especialidad> obtenerEspecialidadPorId(
+        @Parameter(description = "ID de la especialidad", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Especialidad> especialidad = especialidadService.obtenerEspecialidadPorId(id);
         return especialidad.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar una especialidad
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar especialidad", description = "Actualiza la información de una especialidad existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Especialidad actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
     public ResponseEntity<Especialidad> actualizarEspecialidad(
+            @Parameter(description = "ID de la especialidad", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados de la especialidad", required = true)
             @RequestBody Especialidad especialidad) {
         try {
             Especialidad especialidadActualizada = especialidadService.actualizarEspecialidad(id, especialidad);
@@ -65,11 +87,15 @@ public class EspecialidadController {
         }
     }
 
-    /**
-     * Eliminar una especialidad
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarEspecialidad(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar especialidad", description = "Elimina una especialidad del sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Especialidad eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
+    public ResponseEntity<Void> eliminarEspecialidad(
+        @Parameter(description = "ID de la especialidad", required = true, example = "1")
+        @PathVariable Integer id) {
         try {
             especialidadService.eliminarEspecialidad(id);
             return ResponseEntity.noContent().build();

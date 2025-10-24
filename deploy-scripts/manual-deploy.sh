@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Deployment Manual - Guía paso a paso
+# Usa este script si no tienes configurado SSH con claves
+
+echo "======================================"
+echo "📋 GUÍA DE DEPLOYMENT MANUAL"
+echo "======================================"
+echo ""
+echo "El JAR ha sido compilado exitosamente en:"
+echo "   target/citas-backend-0.0.1-SNAPSHOT.jar"
+echo ""
+echo "======================================"
+echo "PASOS A SEGUIR:"
+echo "======================================"
+echo ""
+echo "1️⃣  Copia el JAR a tu VPS:"
+echo "    scp target/citas-backend-0.0.1-SNAPSHOT.jar root@56.125.172.86:/root/mediapp-backend/"
+echo ""
+echo "2️⃣  Conéctate a tu VPS:"
+echo "    ssh root@56.125.172.86"
+echo ""
+echo "3️⃣  Una vez conectado, ejecuta estos comandos:"
+echo "    cd /root/mediapp-backend"
+echo "    systemctl restart mediapp-backend"
+echo "    systemctl status mediapp-backend"
+echo ""
+echo "4️⃣  Verifica que esté funcionando:"
+echo "    curl http://localhost:8080/actuator/health"
+echo ""
+echo "5️⃣  Sal de la VPS:"
+echo "    exit"
+echo ""
+echo "======================================"
+echo "URLs para verificar (desde tu navegador):"
+echo "======================================"
+echo ""
+echo "   🌐 Health Check: http://56.125.172.86:8080/actuator/health"
+echo "   📚 Swagger UI: http://56.125.172.86:8080/swagger-ui.html"
+echo "   📄 API Docs: http://56.125.172.86:8080/v3/api-docs"
+echo ""
+echo "======================================"
+echo "¿Quieres continuar con el deployment manual? (y/n)"
+read -r response
+
+if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "📤 Copiando JAR a VPS..."
+    echo "   (Se te pedirá la contraseña de root@56.125.172.86)"
+    echo ""
+    scp target/citas-backend-0.0.1-SNAPSHOT.jar root@56.125.172.86:/root/mediapp-backend/
+    
+    echo ""
+    echo "✅ Archivo copiado!"
+    echo ""
+    echo "🔄 Ahora conéctate a tu VPS y reinicia el servicio:"
+    echo ""
+    echo "    ssh root@56.125.172.86"
+    echo "    cd /root/mediapp-backend"
+    echo "    systemctl restart mediapp-backend"
+    echo "    systemctl status mediapp-backend"
+    echo ""
+else
+    echo ""
+    echo "❌ Deployment cancelado"
+    echo "   El JAR compilado está disponible en: target/citas-backend-0.0.1-SNAPSHOT.jar"
+    echo ""
+fi

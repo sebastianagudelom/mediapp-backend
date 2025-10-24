@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.HistorialMedico;
 import com.mediapp.citasbackend.services.interfaces.HistorialMedicoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,15 +24,23 @@ import java.util.Optional;
 @RequestMapping("/api/historial-medico")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Historial Médico", description = "Gestión de historiales médicos - registros clínicos de pacientes")
+@SecurityRequirement(name = "bearerAuth")
 public class HistorialMedicoController {
 
     private final HistorialMedicoService historialMedicoService;
 
-    /**
-     * Crear un nuevo historial médico
-     */
     @PostMapping
-    public ResponseEntity<HistorialMedico> crearHistorialMedico(@RequestBody HistorialMedico historialMedico) {
+    @Operation(summary = "Crear nuevo historial médico", 
+               description = "Registra un nuevo historial médico para una cita")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Historial médico creado exitosamente",
+            content = @Content(schema = @Schema(implementation = HistorialMedico.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de historial médico inválidos")
+    })
+    public ResponseEntity<HistorialMedico> crearHistorialMedico(
+        @Parameter(description = "Datos del historial médico a crear", required = true)
+        @RequestBody HistorialMedico historialMedico) {
         try {
             HistorialMedico nuevoHistorial = historialMedicoService.guardarHistorialMedico(historialMedico);
             return new ResponseEntity<>(nuevoHistorial, HttpStatus.CREATED);
@@ -33,31 +49,41 @@ public class HistorialMedicoController {
         }
     }
 
-    /**
-     * Obtener todos los historiales médicos
-     */
     @GetMapping
+    @Operation(summary = "Obtener todos los historiales médicos", 
+               description = "Retorna listado completo de historiales médicos")
+    @ApiResponse(responseCode = "200", description = "Lista de historiales obtenida exitosamente")
     public ResponseEntity<List<HistorialMedico>> obtenerTodosLosHistorialesMedicos() {
         List<HistorialMedico> historiales = historialMedicoService.obtenerTodosLosHistorialesMedicos();
         return ResponseEntity.ok(historiales);
     }
 
-    /**
-     * Obtener historial médico por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<HistorialMedico> obtenerHistorialMedicoPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener historial médico por ID", 
+               description = "Retorna los detalles de un historial médico específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Historial médico encontrado"),
+        @ApiResponse(responseCode = "404", description = "Historial médico no encontrado")
+    })
+    public ResponseEntity<HistorialMedico> obtenerHistorialMedicoPorId(
+        @Parameter(description = "ID del historial médico", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<HistorialMedico> historial = historialMedicoService.obtenerHistorialMedicoPorId(id);
         return historial.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar un historial médico
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar historial médico", 
+               description = "Actualiza la información de un historial médico existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Historial médico actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Historial médico no encontrado")
+    })
     public ResponseEntity<HistorialMedico> actualizarHistorialMedico(
+            @Parameter(description = "ID del historial médico", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados del historial médico", required = true)
             @RequestBody HistorialMedico historialMedico) {
         try {
             HistorialMedico historialActualizado = 

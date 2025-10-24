@@ -3,6 +3,14 @@ package com.mediapp.citasbackend.controllers;
 import com.mediapp.citasbackend.entities.CalendarioDisponibilidad;
 import com.mediapp.citasbackend.entities.Medico;
 import com.mediapp.citasbackend.services.interfaces.CalendarioDisponibilidadService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +24,22 @@ import java.util.Optional;
 @RequestMapping("/api/calendario-disponibilidad")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Calendario de Disponibilidad", description = "Gestión de horarios y disponibilidad de médicos para citas")
+@SecurityRequirement(name = "bearerAuth")
 public class CalendarioDisponibilidadController {
 
     private final CalendarioDisponibilidadService calendarioService;
 
-    /**
-     * Crear una nueva disponibilidad
-     */
     @PostMapping
+    @Operation(summary = "Crear nueva disponibilidad", 
+               description = "Registra un nuevo horario de disponibilidad para un médico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Disponibilidad creada exitosamente",
+            content = @Content(schema = @Schema(implementation = CalendarioDisponibilidad.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de disponibilidad inválidos")
+    })
     public ResponseEntity<CalendarioDisponibilidad> crearDisponibilidad(
+            @Parameter(description = "Datos de la disponibilidad a crear", required = true)
             @RequestBody CalendarioDisponibilidad disponibilidad) {
         try {
             CalendarioDisponibilidad nuevaDisponibilidad = calendarioService.guardarDisponibilidad(disponibilidad);
@@ -34,31 +49,41 @@ public class CalendarioDisponibilidadController {
         }
     }
 
-    /**
-     * Obtener todas las disponibilidades
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las disponibilidades", 
+               description = "Retorna listado completo de horarios de disponibilidad")
+    @ApiResponse(responseCode = "200", description = "Lista de disponibilidades obtenida exitosamente")
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerTodasLasDisponibilidades() {
         List<CalendarioDisponibilidad> disponibilidades = calendarioService.obtenerTodasLasDisponibilidades();
         return ResponseEntity.ok(disponibilidades);
     }
 
-    /**
-     * Obtener disponibilidad por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<CalendarioDisponibilidad> obtenerDisponibilidadPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener disponibilidad por ID", 
+               description = "Retorna los detalles de un horario de disponibilidad específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Disponibilidad encontrada"),
+        @ApiResponse(responseCode = "404", description = "Disponibilidad no encontrada")
+    })
+    public ResponseEntity<CalendarioDisponibilidad> obtenerDisponibilidadPorId(
+        @Parameter(description = "ID de la disponibilidad", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<CalendarioDisponibilidad> disponibilidad = calendarioService.obtenerDisponibilidadPorId(id);
         return disponibilidad.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar una disponibilidad
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar disponibilidad", 
+               description = "Actualiza la información de un horario de disponibilidad existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Disponibilidad no encontrada")
+    })
     public ResponseEntity<CalendarioDisponibilidad> actualizarDisponibilidad(
+            @Parameter(description = "ID de la disponibilidad", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados de la disponibilidad", required = true)
             @RequestBody CalendarioDisponibilidad disponibilidad) {
         try {
             CalendarioDisponibilidad disponibilidadActualizada = 

@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Notificacion;
 import com.mediapp.citasbackend.services.interfaces.NotificacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -17,15 +25,23 @@ import java.util.Optional;
 @RequestMapping("/api/notificaciones")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Notificaciones", description = "Gestión de notificaciones - alertas y mensajes del sistema")
+@SecurityRequirement(name = "bearerAuth")
 public class NotificacionController {
 
     private final NotificacionService notificacionService;
 
-    /**
-     * crea notificaciones
-     */
     @PostMapping
-    public ResponseEntity<Notificacion> crearNotificacion(@RequestBody Notificacion notificacion) {
+    @Operation(summary = "Crear nueva notificación", 
+               description = "Crea una nueva notificación para un usuario")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente",
+            content = @Content(schema = @Schema(implementation = Notificacion.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de notificación inválidos")
+    })
+    public ResponseEntity<Notificacion> crearNotificacion(
+        @Parameter(description = "Datos de la notificación a crear", required = true)
+        @RequestBody Notificacion notificacion) {
         try {
             Notificacion nuevaNotificacion = notificacionService.guardarNotificacion(notificacion);
             return new ResponseEntity<>(nuevaNotificacion, HttpStatus.CREATED);
@@ -34,31 +50,41 @@ public class NotificacionController {
         }
     }
 
-    /**
-     * Obtener todas las notificaciones
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las notificaciones", 
+               description = "Retorna listado completo de notificaciones del sistema")
+    @ApiResponse(responseCode = "200", description = "Lista de notificaciones obtenida exitosamente")
     public ResponseEntity<List<Notificacion>> obtenerTodasLasNotificaciones() {
         List<Notificacion> notificaciones = notificacionService.obtenerTodasLasNotificaciones();
         return ResponseEntity.ok(notificaciones);
     }
 
-    /**
-     * Obtener notificación por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Notificacion> obtenerNotificacionPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener notificación por ID", 
+               description = "Retorna los detalles de una notificación específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Notificación encontrada"),
+        @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
+    })
+    public ResponseEntity<Notificacion> obtenerNotificacionPorId(
+        @Parameter(description = "ID de la notificación", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Notificacion> notificacion = notificacionService.obtenerNotificacionPorId(id);
         return notificacion.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar una notificación
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar notificación", 
+               description = "Actualiza una notificación existente (ej: marcar como leída)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Notificación actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
+    })
     public ResponseEntity<Notificacion> actualizarNotificacion(
+            @Parameter(description = "ID de la notificación", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados de la notificación", required = true)
             @RequestBody Notificacion notificacion) {
         try {
             Notificacion notificacionActualizada = notificacionService.actualizarNotificacion(id, notificacion);
