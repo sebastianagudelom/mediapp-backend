@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Cita;
 import com.mediapp.citasbackend.services.interfaces.CitaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -18,15 +26,22 @@ import java.util.Optional;
 @RequestMapping("/api/citas")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Citas", description = "Gestión de citas médicas - crear, consultar, actualizar y cancelar citas")
+@SecurityRequirement(name = "bearerAuth")
 public class CitaController {
 
     private final CitaService citaService;
 
-    /**
-     * Crear nueva  cita
-     */
     @PostMapping
-    public ResponseEntity<Cita>  crearCita(@RequestBody Cita cita) {
+    @Operation(summary = "Crear nueva cita", description = "Crea una nueva cita médica en el sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Cita creada exitosamente",
+            content = @Content(schema = @Schema(implementation = Cita.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de cita inválidos")
+    })
+    public ResponseEntity<Cita> crearCita(
+        @Parameter(description = "Datos de la cita a crear", required = true)
+        @RequestBody Cita cita) {
         try {
             Cita nuevaCita = citaService.guardarCita(cita);
             return new ResponseEntity<>(nuevaCita, HttpStatus.CREATED);
@@ -35,31 +50,38 @@ public class CitaController {
         }
     }
 
-    /**
-     * Obtener todas las citas
-     */
     @GetMapping
+    @Operation(summary = "Obtener todas las citas", description = "Retorna listado completo de citas médicas del sistema")
+    @ApiResponse(responseCode = "200", description = "Lista de citas obtenida exitosamente")
     public ResponseEntity<List<Cita>> obtenerTodasLasCitas() {
         List<Cita> citas = citaService.obtenerTodasLasCitas();
         return ResponseEntity.ok(citas);
     }
 
-    /**
-     * Obtener cita por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Cita> obtenerCitaPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener cita por ID", description = "Retorna los detalles de una cita específica por su identificador")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Cita encontrada"),
+        @ApiResponse(responseCode = "404", description = "Cita no encontrada")
+    })
+    public ResponseEntity<Cita> obtenerCitaPorId(
+        @Parameter(description = "ID de la cita", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Cita> cita = citaService.obtenerCitaPorId(id);
         return cita.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar una cita
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar cita", description = "Actualiza la información de una cita existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Cita actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Cita no encontrada")
+    })
     public ResponseEntity<Cita> actualizarCita(
+            @Parameter(description = "ID de la cita", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados de la cita", required = true)
             @RequestBody Cita cita) {
         try {
             Cita citaActualizada = citaService.actualizarCita(id, cita);
@@ -69,11 +91,15 @@ public class CitaController {
         }
     }
 
-    /**
-     * Eliminar una cita
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCita(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar cita", description = "Elimina una cita del sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Cita eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Cita no encontrada")
+    })
+    public ResponseEntity<Void> eliminarCita(
+        @Parameter(description = "ID de la cita", required = true, example = "1")
+        @PathVariable Integer id) {
         try {
             citaService.eliminarCita(id);
             return ResponseEntity.noContent().build();
@@ -82,40 +108,46 @@ public class CitaController {
         }
     }
 
-    /**
-     * Obtener citas por paciente
-     */
     @GetMapping("/paciente/{idPaciente}")
-    public ResponseEntity<List<Cita>> obtenerCitasPorPaciente(@PathVariable Integer idPaciente) {
+    @Operation(summary = "Obtener citas por paciente", description = "Retorna todas las citas de un paciente específico")
+    @ApiResponse(responseCode = "200", description = "Lista de citas del paciente")
+    public ResponseEntity<List<Cita>> obtenerCitasPorPaciente(
+        @Parameter(description = "ID del paciente", required = true, example = "1")
+        @PathVariable Integer idPaciente) {
         List<Cita> citas = citaService.obtenerCitasPorPacienteId(idPaciente);
         return ResponseEntity.ok(citas);
     }
 
-    /**
-     * Obtener citas por paciente y estado
-     */
     @GetMapping("/paciente/{idPaciente}/estado/{estado}")
+    @Operation(summary = "Obtener citas por paciente y estado", 
+               description = "Retorna las citas de un paciente filtradas por estado (PROGRAMADA, CONFIRMADA, EN_CURSO, COMPLETADA, CANCELADA)")
+    @ApiResponse(responseCode = "200", description = "Lista de citas filtradas")
     public ResponseEntity<List<Cita>> obtenerCitasPorPacienteYEstado(
+            @Parameter(description = "ID del paciente", required = true, example = "1")
             @PathVariable Integer idPaciente,
+            @Parameter(description = "Estado de la cita", required = true, example = "PROGRAMADA")
             @PathVariable Cita.Estado estado) {
         List<Cita> citas = citaService.obtenerCitasPorPacienteYEstado(idPaciente, estado);
         return ResponseEntity.ok(citas);
     }
 
-    /**
-     * Obtener citas programadas por paciente
-     */
     @GetMapping("/paciente/{idPaciente}/programadas")
-    public ResponseEntity<List<Cita>> obtenerCitasProgramadasPorPaciente(@PathVariable Integer idPaciente) {
+    @Operation(summary = "Obtener citas programadas por paciente", 
+               description = "Retorna las citas programadas (futuras) de un paciente")
+    @ApiResponse(responseCode = "200", description = "Lista de citas programadas")
+    public ResponseEntity<List<Cita>> obtenerCitasProgramadasPorPaciente(
+        @Parameter(description = "ID del paciente", required = true, example = "1")
+        @PathVariable Integer idPaciente) {
         List<Cita> citas = citaService.obtenerCitasProgramadasPorPaciente(idPaciente);
         return ResponseEntity.ok(citas);
     }
 
-    /**
-     * Obtener citas por médico
-     */
     @GetMapping("/medico/{idMedico}")
-    public ResponseEntity<List<Cita>> obtenerCitasPorMedico(@PathVariable Integer idMedico) {
+    @Operation(summary = "Obtener citas por médico", description = "Retorna todas las citas de un médico específico")
+    @ApiResponse(responseCode = "200", description = "Lista de citas del médico")
+    public ResponseEntity<List<Cita>> obtenerCitasPorMedico(
+        @Parameter(description = "ID del médico", required = true, example = "1")
+        @PathVariable Integer idMedico) {
         List<Cita> citas = citaService.obtenerCitasPorMedicoId(idMedico);
         return ResponseEntity.ok(citas);
     }

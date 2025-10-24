@@ -5,6 +5,13 @@ import com.mediapp.citasbackend.dtos.LoginRequestDTO;
 import com.mediapp.citasbackend.dtos.RegisterRequestDTO;
 import com.mediapp.citasbackend.services.interfaces.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,28 +22,156 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Autenticación", description = "Endpoints para autenticación y registro de usuarios")
+@Tag(name = "Autenticación", description = "Endpoints para autenticación y registro de usuarios en el sistema MediApp")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register") //http://56.125.172.86:8080/api/auth/register
-    @Operation(summary = "Registrar nuevo usuario", description = "Crea un nuevo usuario en el sistema")
+    @PostMapping("/register")
+    @Operation(
+        summary = "Registrar nuevo usuario",
+        description = "Crea un nuevo usuario en el sistema con rol de PACIENTE o MEDICO. Retorna tokens de acceso y refresh.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos del usuario a registrar",
+            required = true,
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = RegisterRequestDTO.class),
+                examples = @ExampleObject(
+                    name = "Ejemplo de registro",
+                    value = """
+                        {
+                          "email": "usuario@ejemplo.com",
+                          "password": "Password123!",
+                          "nombreCompleto": "Juan Pérez",
+                          "rol": "PACIENTE"
+                        }
+                        """
+                )
+            )
+        )
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Usuario registrado exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = AuthResponseDTO.class),
+                examples = @ExampleObject(
+                    value = """
+                        {
+                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "tokenType": "Bearer",
+                          "expiresIn": 3600
+                        }
+                        """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos de registro inválidos o email ya registrado",
+            content = @Content(mediaType = "application/json")
+        )
+    })
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request) {
         AuthResponseDTO response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login") //http://56.125.172.86:8080/api/auth/login
-    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y retorna tokens JWT")
+    @PostMapping("/login")
+    @Operation(
+        summary = "Iniciar sesión",
+        description = "Autentica un usuario con email y contraseña. Retorna tokens JWT de acceso y refresh para autenticación.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Credenciales de inicio de sesión",
+            required = true,
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = LoginRequestDTO.class),
+                examples = @ExampleObject(
+                    name = "Ejemplo de login",
+                    value = """
+                        {
+                          "email": "usuario@ejemplo.com",
+                          "password": "Password123!"
+                        }
+                        """
+                )
+            )
+        )
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Autenticación exitosa",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = AuthResponseDTO.class),
+                examples = @ExampleObject(
+                    value = """
+                        {
+                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "tokenType": "Bearer",
+                          "expiresIn": 3600
+                        }
+                        """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Credenciales inválidas",
+            content = @Content(mediaType = "application/json")
+        )
+    })
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         AuthResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/refresh") //http://56.125.172.86:8080/api/auth/refresh  
-    @Operation(summary = "Refrescar token", description = "Genera un nuevo token de acceso usando el refresh token")
-    public ResponseEntity<AuthResponseDTO> refreshToken(@RequestHeader("Authorization") String authHeader) {
+    @PostMapping("/refresh")
+    @Operation(
+        summary = "Refrescar token de acceso",
+        description = "Genera un nuevo token de acceso utilizando el refresh token. El refresh token debe enviarse en el header Authorization con el formato 'Bearer {token}'.",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Token refrescado exitosamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = AuthResponseDTO.class),
+                examples = @ExampleObject(
+                    value = """
+                        {
+                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "tokenType": "Bearer",
+                          "expiresIn": 3600
+                        }
+                        """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Refresh token inválido o expirado",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<AuthResponseDTO> refreshToken(
+        @Parameter(
+            description = "Refresh token en formato Bearer",
+            required = true,
+            example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        )
+        @RequestHeader("Authorization") String authHeader
+    ) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

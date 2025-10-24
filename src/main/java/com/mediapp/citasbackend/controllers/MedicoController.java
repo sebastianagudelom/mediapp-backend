@@ -2,6 +2,14 @@ package com.mediapp.citasbackend.controllers;
 
 import com.mediapp.citasbackend.entities.Medico;
 import com.mediapp.citasbackend.services.interfaces.MedicoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +24,22 @@ import java.util.Optional;
 @RequestMapping("/api/medicos")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Médicos", description = "Gestión de médicos - registro, consulta y actualización de información profesional")
+@SecurityRequirement(name = "bearerAuth")
 public class MedicoController {
 
     private final MedicoService medicoService;
 
-    /**
-     * Crear un nuevo médico
-     */
     @PostMapping
-    public ResponseEntity<Medico> crearMedico(@RequestBody Medico medico) {
+    @Operation(summary = "Crear nuevo médico", description = "Registra un nuevo médico en el sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Médico creado exitosamente",
+            content = @Content(schema = @Schema(implementation = Medico.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de médico inválidos")
+    })
+    public ResponseEntity<Medico> crearMedico(
+        @Parameter(description = "Datos del médico a crear", required = true)
+        @RequestBody Medico medico) {
         try {
             Medico nuevoMedico = medicoService.guardarMedico(medico);
             return new ResponseEntity<>(nuevoMedico, HttpStatus.CREATED);
@@ -33,31 +48,38 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtener todos los médicos
-     */
     @GetMapping
+    @Operation(summary = "Obtener todos los médicos", description = "Retorna listado completo de médicos del sistema")
+    @ApiResponse(responseCode = "200", description = "Lista de médicos obtenida exitosamente")
     public ResponseEntity<List<Medico>> obtenerTodosLosMedicos() {
         List<Medico> medicos = medicoService.obtenerTodosLosMedicos();
         return ResponseEntity.ok(medicos);
     }
 
-    /**
-     * Obtener médico por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Medico> obtenerMedicoPorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener médico por ID", description = "Retorna los detalles de un médico específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Médico encontrado"),
+        @ApiResponse(responseCode = "404", description = "Médico no encontrado")
+    })
+    public ResponseEntity<Medico> obtenerMedicoPorId(
+        @Parameter(description = "ID del médico", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Medico> medico = medicoService.obtenerMedicoPorId(id);
         return medico.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar un médico
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar médico", description = "Actualiza la información de un médico existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Médico actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Médico no encontrado")
+    })
     public ResponseEntity<Medico> actualizarMedico(
+            @Parameter(description = "ID del médico", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados del médico", required = true)
             @RequestBody Medico medico) {
         try {
             Medico medicoActualizado = medicoService.actualizarMedico(id, medico);
@@ -67,11 +89,15 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Eliminar un médico
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarMedico(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar médico", description = "Elimina un médico del sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Médico eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Médico no encontrado")
+    })
+    public ResponseEntity<Void> eliminarMedico(
+        @Parameter(description = "ID del médico", required = true, example = "1")
+        @PathVariable Integer id) {
         try {
             medicoService.eliminarMedico(id);
             return ResponseEntity.noContent().build();
@@ -80,49 +106,65 @@ public class MedicoController {
         }
     }
 
-    /**
-     * Obtener médico por ID de usuario
-     */
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<Medico> obtenerMedicoPorUsuario(@PathVariable Integer idUsuario) {
+    @Operation(summary = "Obtener médico por ID de usuario", 
+               description = "Retorna el perfil de médico asociado a un usuario")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Médico encontrado"),
+        @ApiResponse(responseCode = "404", description = "Médico no encontrado para este usuario")
+    })
+    public ResponseEntity<Medico> obtenerMedicoPorUsuario(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer idUsuario) {
         Optional<Medico> medico = medicoService.obtenerMedicoPorUsuarioId(idUsuario);
         return medico.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Verificar si existe médico por ID de usuario
-     */
     @GetMapping("/usuario/{idUsuario}/existe")
-    public ResponseEntity<Boolean> existeMedicoPorUsuario(@PathVariable Integer idUsuario) {
+    @Operation(summary = "Verificar si existe médico por usuario", 
+               description = "Verifica si existe un perfil de médico asociado al usuario")
+    @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
+    public ResponseEntity<Boolean> existeMedicoPorUsuario(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer idUsuario) {
         boolean existe = medicoService.existeMedicoPorUsuarioId(idUsuario);
         return ResponseEntity.ok(existe);
     }
 
-    /**
-     * Obtener médico por número de licencia
-     */
     @GetMapping("/licencia/{numeroLicencia}")
-    public ResponseEntity<Medico> obtenerMedicoPorNumeroLicencia(@PathVariable String numeroLicencia) {
+    @Operation(summary = "Obtener médico por número de licencia", 
+               description = "Busca un médico por su número de licencia profesional")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Médico encontrado"),
+        @ApiResponse(responseCode = "404", description = "Médico no encontrado con esta licencia")
+    })
+    public ResponseEntity<Medico> obtenerMedicoPorNumeroLicencia(
+        @Parameter(description = "Número de licencia profesional", required = true, example = "LIC123456")
+        @PathVariable String numeroLicencia) {
         Optional<Medico> medico = medicoService.obtenerMedicoPorNumeroLicencia(numeroLicencia);
         return medico.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Verificar si existe número de licencia
-     */
     @GetMapping("/licencia/{numeroLicencia}/existe")
-    public ResponseEntity<Boolean> existeNumeroLicencia(@PathVariable String numeroLicencia) {
+    @Operation(summary = "Verificar existencia de licencia", 
+               description = "Verifica si un número de licencia profesional ya está registrado")
+    @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
+    public ResponseEntity<Boolean> existeNumeroLicencia(
+        @Parameter(description = "Número de licencia a verificar", required = true, example = "LIC123456")
+        @PathVariable String numeroLicencia) {
         boolean existe = medicoService.existeNumeroLicencia(numeroLicencia);
         return ResponseEntity.ok(existe);
     }
 
-    /**
-     * Obtener médicos por especialidad
-     */
     @GetMapping("/especialidad/{idEspecialidad}")
-    public ResponseEntity<List<Medico>> obtenerMedicosPorEspecialidad(@PathVariable Integer idEspecialidad) {
+    @Operation(summary = "Obtener médicos por especialidad", 
+               description = "Retorna todos los médicos de una especialidad específica")
+    @ApiResponse(responseCode = "200", description = "Lista de médicos de la especialidad")
+    public ResponseEntity<List<Medico>> obtenerMedicosPorEspecialidad(
+        @Parameter(description = "ID de la especialidad", required = true, example = "1")
+        @PathVariable Integer idEspecialidad) {
         List<Medico> medicos = medicoService.obtenerMedicosPorEspecialidadId(idEspecialidad);
         return ResponseEntity.ok(medicos);
     }

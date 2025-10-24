@@ -3,6 +3,14 @@ package com.mediapp.citasbackend.controllers;
 import com.mediapp.citasbackend.entities.Paciente;
 import com.mediapp.citasbackend.entities.Usuario;
 import com.mediapp.citasbackend.services.interfaces.PacienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +23,22 @@ import java.util.Optional;
 @RequestMapping("/api/pacientes")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Tag(name = "Pacientes", description = "Gestión de pacientes - registro, consulta y actualización de información personal y médica")
+@SecurityRequirement(name = "bearerAuth")
 public class PacienteController {
 
     private final PacienteService pacienteService;
 
-    /**
-     * Crear un nuevo paciente
-     */
     @PostMapping
-    public ResponseEntity<Paciente> crearPaciente(@RequestBody Paciente paciente) {
+    @Operation(summary = "Crear nuevo paciente", description = "Registra un nuevo paciente en el sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Paciente creado exitosamente",
+            content = @Content(schema = @Schema(implementation = Paciente.class))),
+        @ApiResponse(responseCode = "400", description = "Datos de paciente inválidos")
+    })
+    public ResponseEntity<Paciente> crearPaciente(
+        @Parameter(description = "Datos del paciente a crear", required = true)
+        @RequestBody Paciente paciente) {
         try {
             Paciente nuevoPaciente = pacienteService.guardarPaciente(paciente);
             return new ResponseEntity<>(nuevoPaciente, HttpStatus.CREATED);
@@ -32,31 +47,38 @@ public class PacienteController {
         }
     }
 
-    /**
-     * Obtener todos los pacientes
-     */
     @GetMapping
+    @Operation(summary = "Obtener todos los pacientes", description = "Retorna listado completo de pacientes del sistema")
+    @ApiResponse(responseCode = "200", description = "Lista de pacientes obtenida exitosamente")
     public ResponseEntity<List<Paciente>> obtenerTodosLosPacientes() {
         List<Paciente> pacientes = pacienteService.obtenerTodosLosPacientes();
         return ResponseEntity.ok(pacientes);
     }
 
-    /**
-     * Obtener paciente por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> obtenerPacientePorId(@PathVariable Integer id) {
+    @Operation(summary = "Obtener paciente por ID", description = "Retorna los detalles de un paciente específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Paciente encontrado"),
+        @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
+    public ResponseEntity<Paciente> obtenerPacientePorId(
+        @Parameter(description = "ID del paciente", required = true, example = "1")
+        @PathVariable Integer id) {
         Optional<Paciente> paciente = pacienteService.obtenerPacientePorId(id);
         return paciente.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Actualizar un paciente
-     */
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar paciente", description = "Actualiza la información de un paciente existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Paciente actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
     public ResponseEntity<Paciente> actualizarPaciente(
+            @Parameter(description = "ID del paciente", required = true, example = "1")
             @PathVariable Integer id,
+            @Parameter(description = "Datos actualizados del paciente", required = true)
             @RequestBody Paciente paciente) {
         try {
             Paciente pacienteActualizado = pacienteService.actualizarPaciente(id, paciente);
@@ -66,11 +88,15 @@ public class PacienteController {
         }
     }
 
-    /**
-     * Eliminar un paciente
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarPaciente(@PathVariable Integer id) {
+    @Operation(summary = "Eliminar paciente", description = "Elimina un paciente del sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Paciente eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
+    public ResponseEntity<Void> eliminarPaciente(
+        @Parameter(description = "ID del paciente", required = true, example = "1")
+        @PathVariable Integer id) {
         try {
             pacienteService.eliminarPaciente(id);
             return ResponseEntity.noContent().build();
@@ -79,21 +105,28 @@ public class PacienteController {
         }
     }
 
-    /**
-     * Obtener paciente por ID de usuario
-     */
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<Paciente> obtenerPacientePorUsuario(@PathVariable Integer idUsuario) {
+    @Operation(summary = "Obtener paciente por ID de usuario", 
+               description = "Retorna el perfil de paciente asociado a un usuario")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Paciente encontrado"),
+        @ApiResponse(responseCode = "404", description = "Paciente no encontrado para este usuario")
+    })
+    public ResponseEntity<Paciente> obtenerPacientePorUsuario(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer idUsuario) {
         Optional<Paciente> paciente = pacienteService.obtenerPacientePorUsuarioId(idUsuario);
         return paciente.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Verificar si existe paciente por ID de usuario
-     */
     @GetMapping("/usuario/{idUsuario}/existe")
-    public ResponseEntity<Boolean> existePacientePorUsuario(@PathVariable Integer idUsuario) {
+    @Operation(summary = "Verificar si existe paciente por usuario", 
+               description = "Verifica si existe un perfil de paciente asociado al usuario")
+    @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
+    public ResponseEntity<Boolean> existePacientePorUsuario(
+        @Parameter(description = "ID del usuario", required = true, example = "1")
+        @PathVariable Integer idUsuario) {
         boolean existe = pacienteService.existePacientePorUsuarioId(idUsuario);
         return ResponseEntity.ok(existe);
     }
