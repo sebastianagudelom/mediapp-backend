@@ -190,7 +190,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Verificar conflictos de horario
      */
-    @GetMapping("/verificar-conflictos") // http://56.125.172.86:8080/api/calendario-disponibilidad/verificar-conflictos
+    @GetMapping("/verificar-conflictos") // http://56.125.172.86:8080/api/calendario-disponibilidad/verificar-conflictos?idMedico={idMedico}&dia={dia}&horaInicio={horaInicio}&horaFin={horaFin}
     public ResponseEntity<List<CalendarioDisponibilidad>> verificarConflictosDeHorario(
             @RequestParam Integer idMedico,
             @RequestParam CalendarioDisponibilidad.DiaSemana dia,
@@ -210,7 +210,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Verificar si tiene conflicto de horario
      */
-    @GetMapping("/tiene-conflicto") // http://56.125.172.86:8080/api/calendario-disponibilidad/tiene-conflicto
+    @GetMapping("/tiene-conflicto") // http://56.125.172.86:8080/api/calendario-disponibilidad/tiene-conflicto?idMedico={idMedico}&dia={dia}&horaInicio={horaInicio}&horaFin={horaFin}
     public ResponseEntity<Boolean> tieneConflictoDeHorario(
             @RequestParam Integer idMedico,
             @RequestParam CalendarioDisponibilidad.DiaSemana dia,
@@ -249,7 +249,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener médicos disponibles en un día y hora específica
      */
-    @GetMapping("/medicos-disponibles/dia/{dia}/hora") // http://56.125.172.86:8080/api/calendario-disponibilidad/medicos-disponibles/dia/{dia}/hora
+    @GetMapping("/medicos-disponibles/dia/{dia}/hora") // http://56.125.172.86:8080/api/calendario-disponibilidad/medicos-disponibles/dia/{dia}/hora?hora={hora}
     public ResponseEntity<List<Medico>> obtenerMedicosDisponiblesEnDiaYHora(
             @PathVariable CalendarioDisponibilidad.DiaSemana dia,
             @RequestParam String hora) {
