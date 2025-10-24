@@ -11,11 +11,12 @@ echo "🚀 Iniciando deployment de MediApp Backend"
 echo "======================================"
 
 # Variables de configuración
-VPS_USER="root"
+VPS_USER="ubuntu"
 VPS_HOST="56.125.172.86"
-VPS_PATH="/root/mediapp-backend"
-JAR_NAME="citas-backend-0.0.1-SNAPSHOT.jar"
-SERVICE_NAME="mediapp-backend"
+VPS_KEY="~/downloads/mediapp-key.pem"
+VPS_PATH="/opt/citas"
+JAR_NAME="app.jar"
+SERVICE_NAME="citas"
 
 echo ""
 echo "📦 Paso 1: Compilando el proyecto con Maven..."
@@ -31,38 +32,38 @@ echo ""
 echo "📤 Paso 2: Subiendo JAR a VPS..."
 
 # Crear directorio en VPS si no existe
-ssh ${VPS_USER}@${VPS_HOST} "mkdir -p ${VPS_PATH}"
+ssh -i ${VPS_KEY} ${VPS_USER}@${VPS_HOST} "sudo mkdir -p ${VPS_PATH}"
 
-# Copiar JAR al VPS
-scp target/${JAR_NAME} ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/
+# Copiar JAR al VPS (renombrando a app.jar)
+scp -i ${VPS_KEY} target/citas-backend-0.0.1-SNAPSHOT.jar ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/${JAR_NAME}
 
 echo "✅ Archivo subido exitosamente!"
 echo ""
 echo "🔄 Paso 3: Reiniciando servicio en VPS..."
 
 # Ejecutar comandos en VPS para reiniciar el servicio
-ssh ${VPS_USER}@${VPS_HOST} << 'ENDSSH'
-cd /root/mediapp-backend
+ssh -i ${VPS_KEY} ${VPS_USER}@${VPS_HOST} << 'ENDSSH'
+cd /opt/citas
 
 # Detener el servicio si está corriendo
-if systemctl is-active --quiet mediapp-backend; then
+if systemctl is-active --quiet citas; then
     echo "Deteniendo servicio..."
-    systemctl stop mediapp-backend
+    sudo systemctl stop citas
 fi
 
 # Reiniciar el servicio
 echo "Iniciando servicio..."
-systemctl start mediapp-backend
-systemctl enable mediapp-backend
+sudo systemctl start citas
+sudo systemctl enable citas
 
 # Verificar estado
 sleep 3
-if systemctl is-active --quiet mediapp-backend; then
+if systemctl is-active --quiet citas; then
     echo "✅ Servicio iniciado correctamente"
-    systemctl status mediapp-backend --no-pager
+    sudo systemctl status citas --no-pager
 else
     echo "❌ Error: El servicio no pudo iniciarse"
-    journalctl -u mediapp-backend -n 50 --no-pager
+    sudo journalctl -u citas -n 50 --no-pager
     exit 1
 fi
 ENDSSH
