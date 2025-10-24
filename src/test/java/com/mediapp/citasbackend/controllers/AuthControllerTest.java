@@ -7,6 +7,8 @@ import com.mediapp.citasbackend.dtos.RegisterRequestDTO;
 import com.mediapp.citasbackend.entities.Usuario;
 import com.mediapp.citasbackend.exceptions.InvalidCredentialsException;
 import com.mediapp.citasbackend.exceptions.ResourceAlreadyExistsException;
+import com.mediapp.citasbackend.security.JwtAuthenticationFilter;
+import com.mediapp.citasbackend.security.JwtService;
 import com.mediapp.citasbackend.services.interfaces.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +42,15 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockitoBean
+    private UserDetailsService userDetailsService;
 
     private RegisterRequestDTO registerRequest;
     private LoginRequestDTO loginRequest;

@@ -20,21 +20,21 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/register") //http://56.125.172.86:8080/api/auth/register
     @Operation(summary = "Registrar nuevo usuario", description = "Crea un nuevo usuario en el sistema")
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request) {
         AuthResponseDTO response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") //http://56.125.172.86:8080/api/auth/login
     @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y retorna tokens JWT")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         AuthResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/refresh") //http://56.125.172.86:8080/api/auth/refresh  
     @Operation(summary = "Refrescar token", description = "Genera un nuevo token de acceso usando el refresh token")
     public ResponseEntity<AuthResponseDTO> refreshToken(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
