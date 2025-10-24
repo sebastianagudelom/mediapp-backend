@@ -30,7 +30,7 @@ public class EvaluacionController {
 
     private final EvaluacionService evaluacionService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/evaluaciones
     @Operation(summary = "Crear nueva evaluación", 
                description = "Registra una nueva evaluación de un médico realizada por un paciente")
     @ApiResponses(value = {
@@ -49,7 +49,7 @@ public class EvaluacionController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/evaluaciones
     @Operation(summary = "Obtener todas las evaluaciones", 
                description = "Retorna listado completo de evaluaciones de médicos")
     @ApiResponse(responseCode = "200", description = "Lista de evaluaciones obtenida exitosamente")
@@ -58,7 +58,7 @@ public class EvaluacionController {
         return ResponseEntity.ok(evaluaciones);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/evaluaciones/{id}
     @Operation(summary = "Obtener evaluación por ID", 
                description = "Retorna los detalles de una evaluación específica")
     @ApiResponses(value = {
@@ -73,7 +73,7 @@ public class EvaluacionController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/evaluaciones/{id}
     @Operation(summary = "Actualizar evaluación", 
                description = "Actualiza una evaluación existente")
     @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class EvaluacionController {
     /**
      * Eliminar una evaluación
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/evaluaciones/{id}
     public ResponseEntity<Void> eliminarEvaluacion(@PathVariable Integer id) {
         try {
             evaluacionService.eliminarEvaluacion(id);
@@ -109,7 +109,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por paciente
      */
-    @GetMapping("/paciente/{idPaciente}")
+    @GetMapping("/paciente/{idPaciente}") // http://56.125.172.86:8080/api/evaluaciones/paciente/{idPaciente}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorPaciente(@PathVariable Integer idPaciente) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesPorPacienteId(idPaciente);
         return ResponseEntity.ok(evaluaciones);
@@ -118,7 +118,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por paciente ordenadas
      */
-    @GetMapping("/paciente/{idPaciente}/ordenadas")
+    @GetMapping("/paciente/{idPaciente}/ordenadas") // http://56.125.172.86:8080/api/evaluaciones/paciente/{idPaciente}/ordenadas
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorPacienteOrdenadas(
             @PathVariable Integer idPaciente) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesPorPacienteOrdenadas(idPaciente);
@@ -128,7 +128,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por médico
      */
-    @GetMapping("/medico/{idMedico}")
+    @GetMapping("/medico/{idMedico}") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorMedico(@PathVariable Integer idMedico) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesPorMedicoId(idMedico);
         return ResponseEntity.ok(evaluaciones);
@@ -137,7 +137,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por médico ordenadas
      */
-    @GetMapping("/medico/{idMedico}/ordenadas")
+    @GetMapping("/medico/{idMedico}/ordenadas") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/ordenadas
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorMedicoOrdenadas(
             @PathVariable Integer idMedico) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesPorMedicoOrdenadas(idMedico);
@@ -147,7 +147,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por calificación
      */
-    @GetMapping("/calificacion/{calificacion}")
+    @GetMapping("/calificacion/{calificacion}") // http://56.125.172.86:8080/api/evaluaciones/calificacion/{calificacion}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorCalificacion(
             @PathVariable Integer calificacion) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesPorCalificacion(calificacion);
@@ -157,7 +157,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por médico y calificación
      */
-    @GetMapping("/medico/{idMedico}/calificacion/{calificacion}")
+    @GetMapping("/medico/{idMedico}/calificacion/{calificacion}") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/calificacion/{calificacion}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorMedicoYCalificacion(
             @PathVariable Integer idMedico,
             @PathVariable Integer calificacion) {
@@ -169,7 +169,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones con calificación mínima
      */
-    @GetMapping("/calificacion-minima/{minCalificacion}")
+    @GetMapping("/calificacion-minima/{minCalificacion}") // http://56.125.172.86:8080/api/evaluaciones/calificacion-minima/{minCalificacion}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesConCalificacionMinima(
             @PathVariable Integer minCalificacion) {
         List<Evaluacion> evaluaciones = 
@@ -180,7 +180,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por médico con calificación mínima
      */
-    @GetMapping("/medico/{idMedico}/calificacion-minima/{minCalificacion}")
+    @GetMapping("/medico/{idMedico}/calificacion-minima/{minCalificacion}") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/calificacion-minima/{minCalificacion}
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorMedicoConCalificacionMinima(
             @PathVariable Integer idMedico,
             @PathVariable Integer minCalificacion) {
@@ -192,7 +192,7 @@ public class EvaluacionController {
     /**
      * Calcular promedio de calificaciones por médico
      */
-    @GetMapping("/medico/{idMedico}/promedio")
+    @GetMapping("/medico/{idMedico}/promedio") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/promedio
     public ResponseEntity<Double> calcularPromedioCalificacionesPorMedico(@PathVariable Integer idMedico) {
         Double promedio = evaluacionService.calcularPromedioCalificacionesPorMedico(idMedico);
         return ResponseEntity.ok(promedio);
@@ -201,7 +201,7 @@ public class EvaluacionController {
     /**
      * Contar evaluaciones por médico
      */
-    @GetMapping("/medico/{idMedico}/contar")
+    @GetMapping("/medico/{idMedico}/contar") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/contar
     public ResponseEntity<Long> contarEvaluacionesPorMedico(@PathVariable Integer idMedico) {
         Long count = evaluacionService.contarEvaluacionesPorMedico(idMedico);
         return ResponseEntity.ok(count);
@@ -210,7 +210,7 @@ public class EvaluacionController {
     /**
      * Contar evaluaciones por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/contar")
+    @GetMapping("/paciente/{idPaciente}/contar") // http://56.125.172.86:8080/api/evaluaciones/paciente/{idPaciente}/contar
     public ResponseEntity<Long> contarEvaluacionesPorPaciente(@PathVariable Integer idPaciente) {
         Long count = evaluacionService.contarEvaluacionesPorPaciente(idPaciente);
         return ResponseEntity.ok(count);
@@ -219,7 +219,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones en rango de fechas
      */
-    @GetMapping("/rango-fechas")
+    @GetMapping("/rango-fechas") // http://56.125.172.86:8080/api/evaluaciones/rango-fechas
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesEnRangoFechas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
@@ -230,7 +230,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones por médico en rango de fechas
      */
-    @GetMapping("/medico/{idMedico}/rango-fechas")
+    @GetMapping("/medico/{idMedico}/rango-fechas") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/rango-fechas
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesPorMedicoEnRangoFechas(
             @PathVariable Integer idMedico,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -243,7 +243,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones con respuesta del médico
      */
-    @GetMapping("/con-respuesta")
+    @GetMapping("/con-respuesta") // http://56.125.172.86:8080/api/evaluaciones/con-respuesta
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesConRespuesta() {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesConRespuesta();
         return ResponseEntity.ok(evaluaciones);
@@ -252,7 +252,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones sin respuesta del médico
      */
-    @GetMapping("/sin-respuesta")
+    @GetMapping("/sin-respuesta") // http://56.125.172.86:8080/api/evaluaciones/sin-respuesta
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesSinRespuesta() {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesSinRespuesta();
         return ResponseEntity.ok(evaluaciones);
@@ -261,7 +261,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones sin respuesta por médico
      */
-    @GetMapping("/medico/{idMedico}/sin-respuesta")
+    @GetMapping("/medico/{idMedico}/sin-respuesta") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/sin-respuesta
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesSinRespuestaPorMedico(
             @PathVariable Integer idMedico) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesSinRespuestaPorMedico(idMedico);
@@ -271,7 +271,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones con comentario
      */
-    @GetMapping("/con-comentario")
+    @GetMapping("/con-comentario") // http://56.125.172.86:8080/api/evaluaciones/con-comentario
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesConComentario() {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesConComentario();
         return ResponseEntity.ok(evaluaciones);
@@ -280,7 +280,7 @@ public class EvaluacionController {
     /**
      * Obtener últimas evaluaciones por médico
      */
-    @GetMapping("/medico/{idMedico}/ultimas")
+    @GetMapping("/medico/{idMedico}/ultimas") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/ultimas
     public ResponseEntity<List<Evaluacion>> obtenerUltimasEvaluacionesPorMedico(
             @PathVariable Integer idMedico) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerUltimasEvaluacionesPorMedico(idMedico);
@@ -290,7 +290,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones recientes (últimos X días)
      */
-    @GetMapping("/recientes")
+    @GetMapping("/recientes") // http://56.125.172.86:8080/api/evaluaciones/recientes
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesRecientes(@RequestParam int dias) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerEvaluacionesRecientes(dias);
         return ResponseEntity.ok(evaluaciones);
@@ -299,7 +299,7 @@ public class EvaluacionController {
     /**
      * Obtener distribución de calificaciones por médico
      */
-    @GetMapping("/medico/{idMedico}/distribucion")
+    @GetMapping("/medico/{idMedico}/distribucion") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/distribucion
     public ResponseEntity<Map<Integer, Long>> obtenerDistribucionCalificacionesPorMedico(
             @PathVariable Integer idMedico) {
         Map<Integer, Long> distribucion = evaluacionService.obtenerDistribucionCalificacionesPorMedico(idMedico);
@@ -309,7 +309,7 @@ public class EvaluacionController {
     /**
      * Obtener mejores evaluaciones en general
      */
-    @GetMapping("/mejores")
+    @GetMapping("/mejores") // http://56.125.172.86:8080/api/evaluaciones/mejores
     public ResponseEntity<List<Evaluacion>> obtenerMejoresEvaluaciones() {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerMejoresEvaluaciones();
         return ResponseEntity.ok(evaluaciones);
@@ -318,7 +318,7 @@ public class EvaluacionController {
     /**
      * Obtener mejores evaluaciones por médico
      */
-    @GetMapping("/medico/{idMedico}/mejores")
+    @GetMapping("/medico/{idMedico}/mejores") // http://56.125.172.86:8080/api/evaluaciones/medico/{idMedico}/mejores
     public ResponseEntity<List<Evaluacion>> obtenerMejoresEvaluacionesPorMedico(
             @PathVariable Integer idMedico) {
         List<Evaluacion> evaluaciones = evaluacionService.obtenerMejoresEvaluacionesPorMedico(idMedico);
@@ -328,7 +328,7 @@ public class EvaluacionController {
     /**
      * Verificar si existe evaluación entre paciente y médico
      */
-    @GetMapping("/existe")
+    @GetMapping("/existe") // http://56.125.172.86:8080/api/evaluaciones/existe
     public ResponseEntity<Boolean> existeEvaluacionEntrePacienteYMedico(
             @RequestParam Integer idPaciente,
             @RequestParam Integer idMedico) {
@@ -339,7 +339,7 @@ public class EvaluacionController {
     /**
      * Obtener evaluaciones entre paciente y médico
      */
-    @GetMapping("/entre-paciente-medico")
+    @GetMapping("/entre-paciente-medico") // http://56.125.172.86:8080/api/evaluaciones/entre-paciente-medico
     public ResponseEntity<List<Evaluacion>> obtenerEvaluacionesEntrePacienteYMedico(
             @RequestParam Integer idPaciente,
             @RequestParam Integer idMedico) {
@@ -351,7 +351,7 @@ public class EvaluacionController {
     /**
      * Agregar respuesta del médico a una evaluación
      */
-    @PatchMapping("/{id}/respuesta")
+    @PatchMapping("/{id}/respuesta") // http://56.125.172.86:8080/api/evaluaciones/{id}/respuesta
     public ResponseEntity<Evaluacion> agregarRespuestaMedico(
             @PathVariable Integer id,
             @RequestBody Map<String, String> request) {

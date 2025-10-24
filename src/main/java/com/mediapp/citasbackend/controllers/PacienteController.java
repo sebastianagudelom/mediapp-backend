@@ -28,7 +28,7 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/pacientes
     @Operation(summary = "Crear nuevo paciente", description = "Registra un nuevo paciente en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Paciente creado exitosamente",
@@ -46,7 +46,7 @@ public class PacienteController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/pacientes
     @Operation(summary = "Obtener todos los pacientes", description = "Retorna listado completo de pacientes del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de pacientes obtenida exitosamente")
     public ResponseEntity<List<Paciente>> obtenerTodosLosPacientes() {
@@ -54,7 +54,7 @@ public class PacienteController {
         return ResponseEntity.ok(pacientes);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/pacientes/{id}
     @Operation(summary = "Obtener paciente por ID", description = "Retorna los detalles de un paciente específico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Paciente encontrado"),
@@ -68,7 +68,7 @@ public class PacienteController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/pacientes/{id}
     @Operation(summary = "Actualizar paciente", description = "Actualiza la información de un paciente existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Paciente actualizado exitosamente"),
@@ -87,7 +87,7 @@ public class PacienteController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/pacientes/{id}
     @Operation(summary = "Eliminar paciente", description = "Elimina un paciente del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Paciente eliminado exitosamente"),
@@ -104,7 +104,7 @@ public class PacienteController {
         }
     }
 
-    @GetMapping("/usuario/{idUsuario}")
+    @GetMapping("/usuario/{idUsuario}") // http://56.125.172.86:8080/api/pacientes/usuario/{idUsuario}
     @Operation(summary = "Obtener paciente por ID de usuario", 
                description = "Retorna el perfil de paciente asociado a un usuario")
     @ApiResponses(value = {
@@ -119,7 +119,7 @@ public class PacienteController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/usuario/{idUsuario}/existe")
+    @GetMapping("/usuario/{idUsuario}/existe") // http://56.125.172.86:8080/api/pacientes/usuario/{idUsuario}/existe
     @Operation(summary = "Verificar si existe paciente por usuario", 
                description = "Verifica si existe un perfil de paciente asociado al usuario")
     @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
@@ -133,7 +133,7 @@ public class PacienteController {
     /**
      * Obtener paciente por número de identificación
      */
-    @GetMapping("/identificacion/{numeroIdentificacion}")
+    @GetMapping("/identificacion/{numeroIdentificacion}") // http://56.125.172.86:8080/api/pacientes/identificacion/{numeroIdentificacion}
     public ResponseEntity<Paciente> obtenerPacientePorNumeroIdentificacion(
             @PathVariable String numeroIdentificacion) {
         Optional<Paciente> paciente = pacienteService.obtenerPacientePorNumeroIdentificacion(numeroIdentificacion);
@@ -144,7 +144,7 @@ public class PacienteController {
     /**
      * Verificar si existe número de identificación
      */
-    @GetMapping("/identificacion/{numeroIdentificacion}/existe")
+    @GetMapping("/identificacion/{numeroIdentificacion}/existe") // http://56.125.172.86:8080/api/pacientes/identificacion/{numeroIdentificacion}/existe
     public ResponseEntity<Boolean> existeNumeroIdentificacion(@PathVariable String numeroIdentificacion) {
         boolean existe = pacienteService.existeNumeroIdentificacion(numeroIdentificacion);
         return ResponseEntity.ok(existe);
@@ -153,7 +153,7 @@ public class PacienteController {
     /**
      * Obtener pacientes por tipo de sangre
      */
-    @GetMapping("/tipo-sangre/{tipoSangre}")
+    @GetMapping("/tipo-sangre/{tipoSangre}") // http://56.125.172.86:8080/api/pacientes/tipo-sangre/{tipoSangre}
     public ResponseEntity<List<Paciente>> obtenerPacientesPorTipoSangre(@PathVariable String tipoSangre) {
         List<Paciente> pacientes = pacienteService.obtenerPacientesPorTipoSangre(tipoSangre);
         return ResponseEntity.ok(pacientes);
@@ -162,7 +162,7 @@ public class PacienteController {
     /**
      * Obtener pacientes sin tipo de sangre
      */
-    @GetMapping("/sin-tipo-sangre")
+    @GetMapping("/sin-tipo-sangre") // http://56.125.172.86:8080/api/pacientes/sin-tipo-sangre
     public ResponseEntity<List<Paciente>> obtenerPacientesSinTipoSangre() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesSinTipoSangre();
         return ResponseEntity.ok(pacientes);
@@ -171,7 +171,7 @@ public class PacienteController {
     /**
      * Obtener pacientes activos
      */
-    @GetMapping("/activos")
+    @GetMapping("/activos") // http://56.125.172.86:8080/api/pacientes/activos
     public ResponseEntity<List<Paciente>> obtenerPacientesActivos() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesActivos();
         return ResponseEntity.ok(pacientes);
@@ -180,7 +180,7 @@ public class PacienteController {
     /**
      * Buscar pacientes por nombre
      */
-    @GetMapping("/buscar")
+    @GetMapping("/buscar") // http://56.125.172.86:8080/api/pacientes/buscar
     public ResponseEntity<List<Paciente>> buscarPacientesPorNombre(@RequestParam String nombre) {
         List<Paciente> pacientes = pacienteService.buscarPacientesPorNombre(nombre);
         return ResponseEntity.ok(pacientes);
@@ -189,7 +189,7 @@ public class PacienteController {
     /**
      * Buscar pacientes activos por nombre
      */
-    @GetMapping("/buscar/activos")
+    @GetMapping("/buscar/activos") // http://56.125.172.86:8080/api/pacientes/buscar/activos
     public ResponseEntity<List<Paciente>> buscarPacientesActivosPorNombre(@RequestParam String nombre) {
         List<Paciente> pacientes = pacienteService.buscarPacientesActivosPorNombre(nombre);
         return ResponseEntity.ok(pacientes);
@@ -198,7 +198,7 @@ public class PacienteController {
     /**
      * Obtener paciente por email
      */
-    @GetMapping("/email/{email}")
+    @GetMapping("/email/{email}") // http://56.125.172.86:8080/api/pacientes/email/{email}
     public ResponseEntity<Paciente> obtenerPacientePorEmail(@PathVariable String email) {
         Optional<Paciente> paciente = pacienteService.obtenerPacientePorEmail(email);
         return paciente.map(ResponseEntity::ok)
@@ -208,7 +208,7 @@ public class PacienteController {
     /**
      * Obtener pacientes por ciudad
      */
-    @GetMapping("/ciudad/{ciudad}")
+    @GetMapping("/ciudad/{ciudad}") // http://56.125.172.86:8080/api/pacientes/ciudad/{ciudad}
     public ResponseEntity<List<Paciente>> obtenerPacientesPorCiudad(@PathVariable String ciudad) {
         List<Paciente> pacientes = pacienteService.obtenerPacientesPorCiudad(ciudad);
         return ResponseEntity.ok(pacientes);
@@ -217,7 +217,7 @@ public class PacienteController {
     /**
      * Obtener pacientes por país
      */
-    @GetMapping("/pais/{pais}")
+    @GetMapping("/pais/{pais}") // http://56.125.172.86:8080/api/pacientes/pais/{pais}
     public ResponseEntity<List<Paciente>> obtenerPacientesPorPais(@PathVariable String pais) {
         List<Paciente> pacientes = pacienteService.obtenerPacientesPorPais(pais);
         return ResponseEntity.ok(pacientes);
@@ -226,7 +226,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con alergias
      */
-    @GetMapping("/con-alergias")
+    @GetMapping("/con-alergias") // http://56.125.172.86:8080/api/pacientes/con-alergias
     public ResponseEntity<List<Paciente>> obtenerPacientesConAlergias() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConAlergias();
         return ResponseEntity.ok(pacientes);
@@ -235,7 +235,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con enfermedades crónicas
      */
-    @GetMapping("/con-enfermedades-cronicas")
+    @GetMapping("/con-enfermedades-cronicas") // http://56.125.172.86:8080/api/pacientes/con-enfermedades-cronicas
     public ResponseEntity<List<Paciente>> obtenerPacientesConEnfermedadesCronicas() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConEnfermedadesCronicas();
         return ResponseEntity.ok(pacientes);
@@ -244,7 +244,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con medicamentos actuales
      */
-    @GetMapping("/con-medicamentos-actuales")
+    @GetMapping("/con-medicamentos-actuales") // http://56.125.172.86:8080/api/pacientes/con-medicamentos-actuales
     public ResponseEntity<List<Paciente>> obtenerPacientesConMedicamentosActuales() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConMedicamentosActuales();
         return ResponseEntity.ok(pacientes);
@@ -253,7 +253,7 @@ public class PacienteController {
     /**
      * Buscar pacientes por alergia específica
      */
-    @GetMapping("/buscar/alergia")
+    @GetMapping("/buscar/alergia") // http://56.125.172.86:8080/api/pacientes/buscar/alergia
     public ResponseEntity<List<Paciente>> buscarPacientesPorAlergia(@RequestParam String alergia) {
         List<Paciente> pacientes = pacienteService.buscarPacientesPorAlergia(alergia);
         return ResponseEntity.ok(pacientes);
@@ -262,7 +262,7 @@ public class PacienteController {
     /**
      * Buscar pacientes por enfermedad específica
      */
-    @GetMapping("/buscar/enfermedad")
+    @GetMapping("/buscar/enfermedad") // http://56.125.172.86:8080/api/pacientes/buscar/enfermedad
     public ResponseEntity<List<Paciente>> buscarPacientesPorEnfermedad(@RequestParam String enfermedad) {
         List<Paciente> pacientes = pacienteService.buscarPacientesPorEnfermedad(enfermedad);
         return ResponseEntity.ok(pacientes);
@@ -271,7 +271,7 @@ public class PacienteController {
     /**
      * Buscar pacientes por medicamento específico
      */
-    @GetMapping("/buscar/medicamento")
+    @GetMapping("/buscar/medicamento") // http://56.125.172.86:8080/api/pacientes/buscar/medicamento
     public ResponseEntity<List<Paciente>> buscarPacientesPorMedicamento(@RequestParam String medicamento) {
         List<Paciente> pacientes = pacienteService.buscarPacientesPorMedicamento(medicamento);
         return ResponseEntity.ok(pacientes);
@@ -280,7 +280,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con contacto de emergencia
      */
-    @GetMapping("/con-contacto-emergencia")
+    @GetMapping("/con-contacto-emergencia") // http://56.125.172.86:8080/api/pacientes/con-contacto-emergencia
     public ResponseEntity<List<Paciente>> obtenerPacientesConContactoEmergencia() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConContactoEmergencia();
         return ResponseEntity.ok(pacientes);
@@ -289,7 +289,7 @@ public class PacienteController {
     /**
      * Obtener pacientes sin contacto de emergencia
      */
-    @GetMapping("/sin-contacto-emergencia")
+    @GetMapping("/sin-contacto-emergencia") // http://56.125.172.86:8080/api/pacientes/sin-contacto-emergencia
     public ResponseEntity<List<Paciente>> obtenerPacientesSinContactoEmergencia() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesSinContactoEmergencia();
         return ResponseEntity.ok(pacientes);
@@ -298,7 +298,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con perfil completo
      */
-    @GetMapping("/perfil-completo")
+    @GetMapping("/perfil-completo") // http://56.125.172.86:8080/api/pacientes/perfil-completo
     public ResponseEntity<List<Paciente>> obtenerPacientesConPerfilCompleto() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConPerfilCompleto();
         return ResponseEntity.ok(pacientes);
@@ -307,7 +307,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con perfil incompleto
      */
-    @GetMapping("/perfil-incompleto")
+    @GetMapping("/perfil-incompleto") // http://56.125.172.86:8080/api/pacientes/perfil-incompleto
     public ResponseEntity<List<Paciente>> obtenerPacientesConPerfilIncompleto() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConPerfilIncompleto();
         return ResponseEntity.ok(pacientes);
@@ -316,7 +316,7 @@ public class PacienteController {
     /**
      * Contar pacientes activos
      */
-    @GetMapping("/contar/activos")
+    @GetMapping("/contar/activos") // http://56.125.172.86:8080/api/pacientes/contar/activos
     public ResponseEntity<Long> contarPacientesActivos() {
         Long count = pacienteService.contarPacientesActivos();
         return ResponseEntity.ok(count);
@@ -325,7 +325,7 @@ public class PacienteController {
     /**
      * Contar pacientes totales
      */
-    @GetMapping("/contar")
+    @GetMapping("/contar") // http://56.125.172.86:8080/api/pacientes/contar
     public ResponseEntity<Long> contarPacientes() {
         Long count = pacienteService.contarPacientes();
         return ResponseEntity.ok(count);
@@ -334,7 +334,7 @@ public class PacienteController {
     /**
      * Contar pacientes por tipo de sangre
      */
-    @GetMapping("/contar/tipo-sangre/{tipoSangre}")
+    @GetMapping("/contar/tipo-sangre/{tipoSangre}") // http://56.125.172.86:8080/api/pacientes/contar/tipo-sangre/{tipoSangre}
     public ResponseEntity<Long> contarPacientesPorTipoSangre(@PathVariable String tipoSangre) {
         Long count = pacienteService.contarPacientesPorTipoSangre(tipoSangre);
         return ResponseEntity.ok(count);
@@ -343,7 +343,7 @@ public class PacienteController {
     /**
      * Obtener pacientes por género
      */
-    @GetMapping("/genero/{genero}")
+    @GetMapping("/genero/{genero}") // http://56.125.172.86:8080/api/pacientes/genero/{genero}
     public ResponseEntity<List<Paciente>> obtenerPacientesPorGenero(@PathVariable Usuario.Genero genero) {
         List<Paciente> pacientes = pacienteService.obtenerPacientesPorGenero(genero);
         return ResponseEntity.ok(pacientes);
@@ -352,7 +352,7 @@ public class PacienteController {
     /**
      * Obtener pacientes recientes
      */
-    @GetMapping("/recientes")
+    @GetMapping("/recientes") // http://56.125.172.86:8080/api/pacientes/recientes
     public ResponseEntity<List<Paciente>> obtenerPacientesRecientes() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesRecientes();
         return ResponseEntity.ok(pacientes);
@@ -361,7 +361,7 @@ public class PacienteController {
     /**
      * Obtener todos los pacientes ordenados por nombre
      */
-    @GetMapping("/ordenados/nombre")
+    @GetMapping("/ordenados/nombre") // http://56.125.172.86:8080/api/pacientes/ordenados/nombre
     public ResponseEntity<List<Paciente>> obtenerTodosLosPacientesOrdenadosPorNombre() {
         List<Paciente> pacientes = pacienteService.obtenerTodosLosPacientesOrdenadosPorNombre();
         return ResponseEntity.ok(pacientes);
@@ -370,7 +370,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con historial médico
      */
-    @GetMapping("/con-historial-medico")
+    @GetMapping("/con-historial-medico") // http://56.125.172.86:8080/api/pacientes/con-historial-medico
     public ResponseEntity<List<Paciente>> obtenerPacientesConHistorialMedico() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConHistorialMedico();
         return ResponseEntity.ok(pacientes);
@@ -379,7 +379,7 @@ public class PacienteController {
     /**
      * Obtener pacientes sin historial médico
      */
-    @GetMapping("/sin-historial-medico")
+    @GetMapping("/sin-historial-medico") // http://56.125.172.86:8080/api/pacientes/sin-historial-medico
     public ResponseEntity<List<Paciente>> obtenerPacientesSinHistorialMedico() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesSinHistorialMedico();
         return ResponseEntity.ok(pacientes);
@@ -388,7 +388,7 @@ public class PacienteController {
     /**
      * Obtener pacientes con citas programadas
      */
-    @GetMapping("/con-citas-programadas")
+    @GetMapping("/con-citas-programadas") // http://56.125.172.86:8080/api/pacientes/con-citas-programadas
     public ResponseEntity<List<Paciente>> obtenerPacientesConCitasProgramadas() {
         List<Paciente> pacientes = pacienteService.obtenerPacientesConCitasProgramadas();
         return ResponseEntity.ok(pacientes);
@@ -397,7 +397,7 @@ public class PacienteController {
     /**
      * Verificar si la identificación es única (excluyendo un ID específico)
      */
-    @GetMapping("/identificacion-unica")
+    @GetMapping("/identificacion-unica") // http://56.125.172.86:8080/api/pacientes/identificacion-unica
     public ResponseEntity<Boolean> identificacionEsUnica(
             @RequestParam String numeroIdentificacion,
             @RequestParam(required = false) Integer idExcluir) {

@@ -26,7 +26,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/register") // http://56.125.172.86:8080/api/auth/register
     @Operation(
         summary = "Registrar nuevo usuario",
         description = "Crea un nuevo usuario en el sistema. Puede ser PACIENTE, MEDICO o ADMIN. Retorna tokens JWT de acceso y refresh."
@@ -51,7 +51,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") // http://56.125.172.86:8080/api/auth/login
     @Operation(
         summary = "Iniciar sesión",
         description = "Autentica un usuario con email y contraseña. Retorna tokens JWT de acceso y refresh para autenticación."
@@ -76,7 +76,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/refresh") // http://56.125.172.86:8080/api/auth/refresh
     @Operation(
         summary = "Refrescar token de acceso",
         description = "Genera un nuevo token de acceso utilizando el refresh token. El refresh token debe enviarse en el header Authorization con el formato 'Bearer {token}'.",

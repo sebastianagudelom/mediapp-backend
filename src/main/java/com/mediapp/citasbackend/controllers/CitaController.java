@@ -31,7 +31,7 @@ public class CitaController {
 
     private final CitaService citaService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/citas
     @Operation(summary = "Crear nueva cita", description = "Crea una nueva cita médica en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Cita creada exitosamente",
@@ -49,7 +49,7 @@ public class CitaController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/citas
     @Operation(summary = "Obtener todas las citas", description = "Retorna listado completo de citas médicas del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de citas obtenida exitosamente")
     public ResponseEntity<List<Cita>> obtenerTodasLasCitas() {
@@ -57,7 +57,7 @@ public class CitaController {
         return ResponseEntity.ok(citas);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/citas/{id}
     @Operation(summary = "Obtener cita por ID", description = "Retorna los detalles de una cita específica por su identificador")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Cita encontrada"),
@@ -71,7 +71,7 @@ public class CitaController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/citas/{id}
     @Operation(summary = "Actualizar cita", description = "Actualiza la información de una cita existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Cita actualizada exitosamente"),
@@ -90,7 +90,7 @@ public class CitaController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/citas/{id}
     @Operation(summary = "Eliminar cita", description = "Elimina una cita del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Cita eliminada exitosamente"),
@@ -107,7 +107,7 @@ public class CitaController {
         }
     }
 
-    @GetMapping("/paciente/{idPaciente}")
+    @GetMapping("/paciente/{idPaciente}") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}
     @Operation(summary = "Obtener citas por paciente", description = "Retorna todas las citas de un paciente específico")
     @ApiResponse(responseCode = "200", description = "Lista de citas del paciente")
     public ResponseEntity<List<Cita>> obtenerCitasPorPaciente(
@@ -117,7 +117,7 @@ public class CitaController {
         return ResponseEntity.ok(citas);
     }
 
-    @GetMapping("/paciente/{idPaciente}/estado/{estado}")
+    @GetMapping("/paciente/{idPaciente}/estado/{estado}") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/estado/{estado}
     @Operation(summary = "Obtener citas por paciente y estado", 
                description = "Retorna las citas de un paciente filtradas por estado (PROGRAMADA, CONFIRMADA, EN_CURSO, COMPLETADA, CANCELADA)")
     @ApiResponse(responseCode = "200", description = "Lista de citas filtradas")
@@ -130,7 +130,7 @@ public class CitaController {
         return ResponseEntity.ok(citas);
     }
 
-    @GetMapping("/paciente/{idPaciente}/programadas")
+    @GetMapping("/paciente/{idPaciente}/programadas") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/programadas
     @Operation(summary = "Obtener citas programadas por paciente", 
                description = "Retorna las citas programadas (futuras) de un paciente")
     @ApiResponse(responseCode = "200", description = "Lista de citas programadas")
@@ -141,7 +141,7 @@ public class CitaController {
         return ResponseEntity.ok(citas);
     }
 
-    @GetMapping("/medico/{idMedico}")
+    @GetMapping("/medico/{idMedico}") // http://56.125.172.86:8080/api/citas/medico/{idMedico}
     @Operation(summary = "Obtener citas por médico", description = "Retorna todas las citas de un médico específico")
     @ApiResponse(responseCode = "200", description = "Lista de citas del médico")
     public ResponseEntity<List<Cita>> obtenerCitasPorMedico(
@@ -154,7 +154,7 @@ public class CitaController {
     /**
      * Obtener citas por médico y estado
      */
-    @GetMapping("/medico/{idMedico}/estado/{estado}")
+    @GetMapping("/medico/{idMedico}/estado/{estado}") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/estado/{estado}
     public ResponseEntity<List<Cita>> obtenerCitasPorMedicoYEstado(
             @PathVariable Integer idMedico,
             @PathVariable Cita.Estado estado) {
@@ -165,7 +165,7 @@ public class CitaController {
     /**
      * Obtener citas programadas por médico
      */
-    @GetMapping("/medico/{idMedico}/programadas")
+    @GetMapping("/medico/{idMedico}/programadas") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/programadas
     public ResponseEntity<List<Cita>> obtenerCitasProgramadasPorMedico(@PathVariable Integer idMedico) {
         List<Cita> citas = citaService.obtenerCitasProgramadasPorMedico(idMedico);
         return ResponseEntity.ok(citas);
@@ -174,7 +174,7 @@ public class CitaController {
     /**
      * Obtener citas por estado
      */
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/estado/{estado}") // http://56.125.172.86:8080/api/citas/estado/{estado}
     public ResponseEntity<List<Cita>> obtenerCitasPorEstado(@PathVariable Cita.Estado estado) {
         List<Cita> citas = citaService.obtenerCitasPorEstado(estado);
         return ResponseEntity.ok(citas);
@@ -183,7 +183,7 @@ public class CitaController {
     /**
      * Obtener citas por fecha
      */
-    @GetMapping("/fecha/{fecha}")
+    @GetMapping("/fecha/{fecha}") // http://56.125.172.86:8080/api/citas/fecha/{fecha}
     public ResponseEntity<List<Cita>> obtenerCitasPorFecha(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
         List<Cita> citas = citaService.obtenerCitasPorFecha(fecha);
@@ -193,7 +193,7 @@ public class CitaController {
     /**
      * Obtener citas por médico y fecha
      */
-    @GetMapping("/medico/{idMedico}/fecha/{fecha}")
+    @GetMapping("/medico/{idMedico}/fecha/{fecha}") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/fecha/{fecha}
     public ResponseEntity<List<Cita>> obtenerCitasPorMedicoYFecha(
             @PathVariable Integer idMedico,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
@@ -204,7 +204,7 @@ public class CitaController {
     /**
      * Obtener citas por paciente y fecha
      */
-    @GetMapping("/paciente/{idPaciente}/fecha/{fecha}")
+    @GetMapping("/paciente/{idPaciente}/fecha/{fecha}") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/fecha/{fecha}
     public ResponseEntity<List<Cita>> obtenerCitasPorPacienteYFecha(
             @PathVariable Integer idPaciente,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
@@ -215,7 +215,7 @@ public class CitaController {
     /**
      * Obtener citas en rango de fechas
      */
-    @GetMapping("/rango-fechas")
+    @GetMapping("/rango-fechas") // http://56.125.172.86:8080/api/citas/rango-fechas
     public ResponseEntity<List<Cita>> obtenerCitasEnRangoFechas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
@@ -226,7 +226,7 @@ public class CitaController {
     /**
      * Obtener citas por médico en rango de fechas
      */
-    @GetMapping("/medico/{idMedico}/rango-fechas")
+    @GetMapping("/medico/{idMedico}/rango-fechas") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/rango-fechas
     public ResponseEntity<List<Cita>> obtenerCitasPorMedicoEnRangoFechas(
             @PathVariable Integer idMedico,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
@@ -238,7 +238,7 @@ public class CitaController {
     /**
      * Obtener citas por paciente en rango de fechas
      */
-    @GetMapping("/paciente/{idPaciente}/rango-fechas")
+    @GetMapping("/paciente/{idPaciente}/rango-fechas") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/rango-fechas
     public ResponseEntity<List<Cita>> obtenerCitasPorPacienteEnRangoFechas(
             @PathVariable Integer idPaciente,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
@@ -250,7 +250,7 @@ public class CitaController {
     /**
      * Verificar disponibilidad de médico en fecha y hora
      */
-    @GetMapping("/verificar-disponibilidad")
+    @GetMapping("/verificar-disponibilidad") // http://56.125.172.86:8080/api/citas/verificar-disponibilidad
     public ResponseEntity<Cita> verificarDisponibilidadMedicoFechaHora(
             @RequestParam Integer idMedico,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
@@ -263,7 +263,7 @@ public class CitaController {
     /**
      * Verificar si médico está disponible en fecha y hora
      */
-    @GetMapping("/medico-disponible")
+    @GetMapping("/medico-disponible") // http://56.125.172.86:8080/api/citas/medico-disponible
     public ResponseEntity<Boolean> medicoDisponibleEnFechaHora(
             @RequestParam Integer idMedico,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
@@ -275,7 +275,7 @@ public class CitaController {
     /**
      * Obtener citas por tipo
      */
-    @GetMapping("/tipo/{tipoCita}")
+    @GetMapping("/tipo/{tipoCita}") // http://56.125.172.86:8080/api/citas/tipo/{tipoCita}
     public ResponseEntity<List<Cita>> obtenerCitasPorTipo(@PathVariable Cita.TipoCita tipoCita) {
         List<Cita> citas = citaService.obtenerCitasPorTipo(tipoCita);
         return ResponseEntity.ok(citas);
@@ -284,7 +284,7 @@ public class CitaController {
     /**
      * Obtener citas de telemedicina programadas por médico
      */
-    @GetMapping("/medico/{idMedico}/telemedicina-programadas")
+    @GetMapping("/medico/{idMedico}/telemedicina-programadas") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/telemedicina-programadas
     public ResponseEntity<List<Cita>> obtenerCitasTelemedicinaProgramadasPorMedico(
             @PathVariable Integer idMedico) {
         List<Cita> citas = citaService.obtenerCitasTelemedicinaProgramadasPorMedico(idMedico);
@@ -294,7 +294,7 @@ public class CitaController {
     /**
      * Obtener próximas citas por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/proximas")
+    @GetMapping("/paciente/{idPaciente}/proximas") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/proximas
     public ResponseEntity<List<Cita>> obtenerProximasCitasPorPaciente(@PathVariable Integer idPaciente) {
         List<Cita> citas = citaService.obtenerProximasCitasPorPaciente(idPaciente);
         return ResponseEntity.ok(citas);
@@ -303,7 +303,7 @@ public class CitaController {
     /**
      * Obtener próximas citas por médico
      */
-    @GetMapping("/medico/{idMedico}/proximas")
+    @GetMapping("/medico/{idMedico}/proximas") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/proximas
     public ResponseEntity<List<Cita>> obtenerProximasCitasPorMedico(@PathVariable Integer idMedico) {
         List<Cita> citas = citaService.obtenerProximasCitasPorMedico(idMedico);
         return ResponseEntity.ok(citas);
@@ -312,7 +312,7 @@ public class CitaController {
     /**
      * Obtener historial de citas por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/historial")
+    @GetMapping("/paciente/{idPaciente}/historial") // http://56.125.172.86:8080/api/citas/paciente/{idPaciente}/historial
     public ResponseEntity<List<Cita>> obtenerHistorialCitasPorPaciente(@PathVariable Integer idPaciente) {
         List<Cita> citas = citaService.obtenerHistorialCitasPorPaciente(idPaciente);
         return ResponseEntity.ok(citas);
@@ -321,7 +321,7 @@ public class CitaController {
     /**
      * Obtener historial de citas por médico
      */
-    @GetMapping("/medico/{idMedico}/historial")
+    @GetMapping("/medico/{idMedico}/historial") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/historial
     public ResponseEntity<List<Cita>> obtenerHistorialCitasPorMedico(@PathVariable Integer idMedico) {
         List<Cita> citas = citaService.obtenerHistorialCitasPorMedico(idMedico);
         return ResponseEntity.ok(citas);
@@ -330,7 +330,7 @@ public class CitaController {
     /**
      * Contar citas por estado
      */
-    @GetMapping("/contar/estado/{estado}")
+    @GetMapping("/contar/estado/{estado}") // http://56.125.172.86:8080/api/citas/contar/estado/{estado}
     public ResponseEntity<Long> contarCitasPorEstado(@PathVariable Cita.Estado estado) {
         Long count = citaService.contarCitasPorEstado(estado);
         return ResponseEntity.ok(count);
@@ -339,7 +339,7 @@ public class CitaController {
     /**
      * Contar citas por médico y estado
      */
-    @GetMapping("/contar/medico/{idMedico}/estado/{estado}")
+    @GetMapping("/contar/medico/{idMedico}/estado/{estado}") // http://56.125.172.86:8080/api/citas/contar/medico/{idMedico}/estado/{estado}
     public ResponseEntity<Long> contarCitasPorMedicoYEstado(
             @PathVariable Integer idMedico,
             @PathVariable Cita.Estado estado) {
@@ -350,7 +350,7 @@ public class CitaController {
     /**
      * Contar citas por paciente y estado
      */
-    @GetMapping("/contar/paciente/{idPaciente}/estado/{estado}")
+    @GetMapping("/contar/paciente/{idPaciente}/estado/{estado}") // http://56.125.172.86:8080/api/citas/contar/paciente/{idPaciente}/estado/{estado}
     public ResponseEntity<Long> contarCitasPorPacienteYEstado(
             @PathVariable Integer idPaciente,
             @PathVariable Cita.Estado estado) {
@@ -361,7 +361,7 @@ public class CitaController {
     /**
      * Obtener citas del día por médico
      */
-    @GetMapping("/medico/{idMedico}/dia/{fecha}")
+    @GetMapping("/medico/{idMedico}/dia/{fecha}") // http://56.125.172.86:8080/api/citas/medico/{idMedico}/dia/{fecha}
     public ResponseEntity<List<Cita>> obtenerCitasDelDiaPorMedico(
             @PathVariable Integer idMedico,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
@@ -372,7 +372,7 @@ public class CitaController {
     /**
      * Obtener citas canceladas en rango
      */
-    @GetMapping("/canceladas-rango")
+    @GetMapping("/canceladas-rango") // http://56.125.172.86:8080/api/citas/canceladas-rango
     public ResponseEntity<List<Cita>> obtenerCitasCanceladasEnRango(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
@@ -383,7 +383,7 @@ public class CitaController {
     /**
      * Verificar si existe cita entre paciente, médico y fecha
      */
-    @GetMapping("/existe")
+    @GetMapping("/existe") // http://56.125.172.86:8080/api/citas/existe
     public ResponseEntity<Boolean> existeCitaEntrePacienteMedicoYFecha(
             @RequestParam Integer idPaciente,
             @RequestParam Integer idMedico,
@@ -395,7 +395,7 @@ public class CitaController {
     /**
      * Obtener última cita entre paciente y médico
      */
-    @GetMapping("/ultima")
+    @GetMapping("/ultima") // http://56.125.172.86:8080/api/citas/ultima
     public ResponseEntity<Cita> obtenerUltimaCitaEntrePacienteYMedico(
             @RequestParam Integer idPaciente,
             @RequestParam Integer idMedico) {
@@ -407,7 +407,7 @@ public class CitaController {
     /**
      * Completar una cita
      */
-    @PatchMapping("/{id}/completar")
+    @PatchMapping("/{id}/completar") // http://56.125.172.86:8080/api/citas/{id}/completar
     public ResponseEntity<Cita> completarCita(@PathVariable Integer id) {
         try {
             Cita cita = citaService.completarCita(id);
@@ -420,7 +420,7 @@ public class CitaController {
     /**
      * Cancelar una cita
      */
-    @PatchMapping("/{id}/cancelar")
+    @PatchMapping("/{id}/cancelar") // http://56.125.172.86:8080/api/citas/{id}/cancelar
     public ResponseEntity<Cita> cancelarCita(@PathVariable Integer id) {
         try {
             Cita cita = citaService.cancelarCita(id);
@@ -433,7 +433,7 @@ public class CitaController {
     /**
      * Marcar como no asistió
      */
-    @PatchMapping("/{id}/no-asistio")
+    @PatchMapping("/{id}/no-asistio") // http://56.125.172.86:8080/api/citas/{id}/no-asistio
     public ResponseEntity<Cita> marcarComoNoAsistio(@PathVariable Integer id) {
         try {
             Cita cita = citaService.marcarComoNoAsistio(id);

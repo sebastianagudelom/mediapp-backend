@@ -29,7 +29,7 @@ public class CalendarioDisponibilidadController {
 
     private final CalendarioDisponibilidadService calendarioService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/calendario-disponibilidad
     @Operation(summary = "Crear nueva disponibilidad", 
                description = "Registra un nuevo horario de disponibilidad para un médico")
     @ApiResponses(value = {
@@ -48,7 +48,7 @@ public class CalendarioDisponibilidadController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/calendario-disponibilidad
     @Operation(summary = "Obtener todas las disponibilidades", 
                description = "Retorna listado completo de horarios de disponibilidad")
     @ApiResponse(responseCode = "200", description = "Lista de disponibilidades obtenida exitosamente")
@@ -57,7 +57,7 @@ public class CalendarioDisponibilidadController {
         return ResponseEntity.ok(disponibilidades);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/calendario-disponibilidad/{id}
     @Operation(summary = "Obtener disponibilidad por ID", 
                description = "Retorna los detalles de un horario de disponibilidad específico")
     @ApiResponses(value = {
@@ -72,7 +72,7 @@ public class CalendarioDisponibilidadController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/calendario-disponibilidad/{id}
     @Operation(summary = "Actualizar disponibilidad", 
                description = "Actualiza la información de un horario de disponibilidad existente")
     @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Eliminar una disponibilidad
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/calendario-disponibilidad/{id}
     public ResponseEntity<Void> eliminarDisponibilidad(@PathVariable Integer id) {
         try {
             calendarioService.eliminarDisponibilidad(id);
@@ -109,7 +109,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por médico
      */
-    @GetMapping("/medico/{idMedico}")
+    @GetMapping("/medico/{idMedico}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorMedico(
             @PathVariable Integer idMedico) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -120,7 +120,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades activas por médico
      */
-    @GetMapping("/medico/{idMedico}/activas")
+    @GetMapping("/medico/{idMedico}/activas") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/activas
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesActivasPorMedico(
             @PathVariable Integer idMedico) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -131,7 +131,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por médico y día
      */
-    @GetMapping("/medico/{idMedico}/dia/{dia}")
+    @GetMapping("/medico/{idMedico}/dia/{dia}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/dia/{dia}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorMedicoYDia(
             @PathVariable Integer idMedico,
             @PathVariable CalendarioDisponibilidad.DiaSemana dia) {
@@ -143,7 +143,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidad específica por médico y día
      */
-    @GetMapping("/medico/{idMedico}/dia-especifico/{dia}")
+    @GetMapping("/medico/{idMedico}/dia-especifico/{dia}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/dia-especifico/{dia}
     public ResponseEntity<CalendarioDisponibilidad> obtenerDisponibilidadPorMedicoYDia(
             @PathVariable Integer idMedico,
             @PathVariable CalendarioDisponibilidad.DiaSemana dia) {
@@ -156,7 +156,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por día de la semana
      */
-    @GetMapping("/dia/{dia}")
+    @GetMapping("/dia/{dia}") // http://56.125.172.86:8080/api/calendario-disponibilidad/dia/{dia}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorDia(
             @PathVariable CalendarioDisponibilidad.DiaSemana dia) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -167,7 +167,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por estado
      */
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/estado/{estado}") // http://56.125.172.86:8080/api/calendario-disponibilidad/estado/{estado}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorEstado(
             @PathVariable CalendarioDisponibilidad.Estado estado) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -178,7 +178,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por médico y estado
      */
-    @GetMapping("/medico/{idMedico}/estado/{estado}")
+    @GetMapping("/medico/{idMedico}/estado/{estado}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/estado/{estado}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorMedicoYEstado(
             @PathVariable Integer idMedico,
             @PathVariable CalendarioDisponibilidad.Estado estado) {
@@ -190,7 +190,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Verificar conflictos de horario
      */
-    @GetMapping("/verificar-conflictos")
+    @GetMapping("/verificar-conflictos") // http://56.125.172.86:8080/api/calendario-disponibilidad/verificar-conflictos
     public ResponseEntity<List<CalendarioDisponibilidad>> verificarConflictosDeHorario(
             @RequestParam Integer idMedico,
             @RequestParam CalendarioDisponibilidad.DiaSemana dia,
@@ -210,7 +210,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Verificar si tiene conflicto de horario
      */
-    @GetMapping("/tiene-conflicto")
+    @GetMapping("/tiene-conflicto") // http://56.125.172.86:8080/api/calendario-disponibilidad/tiene-conflicto
     public ResponseEntity<Boolean> tieneConflictoDeHorario(
             @RequestParam Integer idMedico,
             @RequestParam CalendarioDisponibilidad.DiaSemana dia,
@@ -230,7 +230,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Contar disponibilidades activas por médico
      */
-    @GetMapping("/medico/{idMedico}/contar-activas")
+    @GetMapping("/medico/{idMedico}/contar-activas") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/contar-activas
     public ResponseEntity<Long> contarDisponibilidadesActivasPorMedico(@PathVariable Integer idMedico) {
         Long count = calendarioService.contarDisponibilidadesActivasPorMedico(idMedico);
         return ResponseEntity.ok(count);
@@ -239,7 +239,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener médicos disponibles en un día
      */
-    @GetMapping("/medicos-disponibles/dia/{dia}")
+    @GetMapping("/medicos-disponibles/dia/{dia}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medicos-disponibles/dia/{dia}
     public ResponseEntity<List<Medico>> obtenerMedicosDisponiblesEnDia(
             @PathVariable CalendarioDisponibilidad.DiaSemana dia) {
         List<Medico> medicos = calendarioService.obtenerMedicosDisponiblesEnDia(dia);
@@ -249,7 +249,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener médicos disponibles en un día y hora específica
      */
-    @GetMapping("/medicos-disponibles/dia/{dia}/hora")
+    @GetMapping("/medicos-disponibles/dia/{dia}/hora") // http://56.125.172.86:8080/api/calendario-disponibilidad/medicos-disponibles/dia/{dia}/hora
     public ResponseEntity<List<Medico>> obtenerMedicosDisponiblesEnDiaYHora(
             @PathVariable CalendarioDisponibilidad.DiaSemana dia,
             @RequestParam String hora) {
@@ -266,7 +266,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades ordenadas por médico
      */
-    @GetMapping("/medico/{idMedico}/ordenadas")
+    @GetMapping("/medico/{idMedico}/ordenadas") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/ordenadas
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesOrdenadasPorMedico(
             @PathVariable Integer idMedico) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -277,7 +277,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Eliminar todas las disponibilidades de un médico
      */
-    @DeleteMapping("/medico/{idMedico}")
+    @DeleteMapping("/medico/{idMedico}") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}
     public ResponseEntity<Void> eliminarTodasLasDisponibilidadesPorMedico(@PathVariable Integer idMedico) {
         try {
             calendarioService.eliminarTodasLasDisponibilidadesPorMedico(idMedico);
@@ -290,7 +290,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Verificar si un médico tiene disponibilidad configurada
      */
-    @GetMapping("/medico/{idMedico}/tiene-disponibilidad")
+    @GetMapping("/medico/{idMedico}/tiene-disponibilidad") // http://56.125.172.86:8080/api/calendario-disponibilidad/medico/{idMedico}/tiene-disponibilidad
     public ResponseEntity<Boolean> medicoTieneDisponibilidadConfigurada(@PathVariable Integer idMedico) {
         boolean tieneDisponibilidad = calendarioService.medicoTieneDisponibilidadConfigurada(idMedico);
         return ResponseEntity.ok(tieneDisponibilidad);
@@ -299,7 +299,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Obtener disponibilidades por intervalo de cita
      */
-    @GetMapping("/intervalo/{intervalo}")
+    @GetMapping("/intervalo/{intervalo}") // http://56.125.172.86:8080/api/calendario-disponibilidad/intervalo/{intervalo}
     public ResponseEntity<List<CalendarioDisponibilidad>> obtenerDisponibilidadesPorIntervalo(
             @PathVariable Integer intervalo) {
         List<CalendarioDisponibilidad> disponibilidades = 
@@ -310,7 +310,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Activar disponibilidad
      */
-    @PatchMapping("/{id}/activar")
+    @PatchMapping("/{id}/activar") // http://56.125.172.86:8080/api/calendario-disponibilidad/{id}/activar
     public ResponseEntity<CalendarioDisponibilidad> activarDisponibilidad(@PathVariable Integer id) {
         try {
             CalendarioDisponibilidad disponibilidad = calendarioService.activarDisponibilidad(id);
@@ -323,7 +323,7 @@ public class CalendarioDisponibilidadController {
     /**
      * Desactivar disponibilidad
      */
-    @PatchMapping("/{id}/desactivar")
+    @PatchMapping("/{id}/desactivar") // http://56.125.172.86:8080/api/calendario-disponibilidad/{id}/desactivar
     public ResponseEntity<CalendarioDisponibilidad> desactivarDisponibilidad(@PathVariable Integer id) {
         try {
             CalendarioDisponibilidad disponibilidad = calendarioService.desactivarDisponibilidad(id);

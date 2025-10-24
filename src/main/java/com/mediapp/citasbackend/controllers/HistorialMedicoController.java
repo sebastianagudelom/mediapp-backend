@@ -29,7 +29,7 @@ public class HistorialMedicoController {
 
     private final HistorialMedicoService historialMedicoService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/historial-medico
     @Operation(summary = "Crear nuevo historial médico", 
                description = "Registra un nuevo historial médico para una cita")
     @ApiResponses(value = {
@@ -48,7 +48,7 @@ public class HistorialMedicoController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/historial-medico
     @Operation(summary = "Obtener todos los historiales médicos", 
                description = "Retorna listado completo de historiales médicos")
     @ApiResponse(responseCode = "200", description = "Lista de historiales obtenida exitosamente")
@@ -57,7 +57,7 @@ public class HistorialMedicoController {
         return ResponseEntity.ok(historiales);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/historial-medico/{id}
     @Operation(summary = "Obtener historial médico por ID", 
                description = "Retorna los detalles de un historial médico específico")
     @ApiResponses(value = {
@@ -72,7 +72,7 @@ public class HistorialMedicoController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/historial-medico/{id}
     @Operation(summary = "Actualizar historial médico", 
                description = "Actualiza la información de un historial médico existente")
     @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class HistorialMedicoController {
     /**
      * Eliminar un historial médico
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/historial-medico/{id}
     public ResponseEntity<Void> eliminarHistorialMedico(@PathVariable Integer id) {
         try {
             historialMedicoService.eliminarHistorialMedico(id);
@@ -109,7 +109,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por ID de cita
      */
-    @GetMapping("/cita/{idCita}")
+    @GetMapping("/cita/{idCita}") // http://56.125.172.86:8080/api/historial-medico/cita/{idCita}
     public ResponseEntity<HistorialMedico> obtenerHistorialMedicoPorCita(@PathVariable Integer idCita) {
         Optional<HistorialMedico> historial = historialMedicoService.obtenerHistorialMedicoPorCitaId(idCita);
         return historial.map(ResponseEntity::ok)
@@ -119,7 +119,7 @@ public class HistorialMedicoController {
     /**
      * Verificar si existe historial médico por ID de cita
      */
-    @GetMapping("/cita/{idCita}/existe")
+    @GetMapping("/cita/{idCita}/existe") // http://56.125.172.86:8080/api/historial-medico/cita/{idCita}/existe
     public ResponseEntity<Boolean> existeHistorialMedicoPorCita(@PathVariable Integer idCita) {
         boolean existe = historialMedicoService.existeHistorialMedicoPorCitaId(idCita);
         return ResponseEntity.ok(existe);
@@ -128,7 +128,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por paciente
      */
-    @GetMapping("/paciente/{idPaciente}")
+    @GetMapping("/paciente/{idPaciente}") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorPaciente(
             @PathVariable Integer idPaciente) {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoPorPacienteId(idPaciente);
@@ -138,7 +138,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por paciente ordenado
      */
-    @GetMapping("/paciente/{idPaciente}/ordenado")
+    @GetMapping("/paciente/{idPaciente}/ordenado") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/ordenado
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorPacienteOrdenado(
             @PathVariable Integer idPaciente) {
         List<HistorialMedico> historiales = 
@@ -149,7 +149,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por médico
      */
-    @GetMapping("/medico/{idMedico}")
+    @GetMapping("/medico/{idMedico}") // http://56.125.172.86:8080/api/historial-medico/medico/{idMedico}
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorMedico(
             @PathVariable Integer idMedico) {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoPorMedicoId(idMedico);
@@ -159,7 +159,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por médico ordenado
      */
-    @GetMapping("/medico/{idMedico}/ordenado")
+    @GetMapping("/medico/{idMedico}/ordenado") // http://56.125.172.86:8080/api/historial-medico/medico/{idMedico}/ordenado
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorMedicoOrdenado(
             @PathVariable Integer idMedico) {
         List<HistorialMedico> historiales = 
@@ -170,7 +170,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico entre paciente y médico
      */
-    @GetMapping("/entre-paciente-medico")
+    @GetMapping("/entre-paciente-medico") // http://56.125.172.86:8080/api/historial-medico/entre-paciente-medico
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoEntrePacienteYMedico(
             @RequestParam Integer idPaciente,
             @RequestParam Integer idMedico) {
@@ -182,7 +182,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico por diagnóstico
      */
-    @GetMapping("/buscar/diagnostico")
+    @GetMapping("/buscar/diagnostico") // http://56.125.172.86:8080/api/historial-medico/buscar/diagnostico
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPorDiagnostico(
             @RequestParam String diagnostico) {
         List<HistorialMedico> historiales = 
@@ -193,7 +193,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico del paciente por diagnóstico
      */
-    @GetMapping("/paciente/{idPaciente}/buscar/diagnostico")
+    @GetMapping("/paciente/{idPaciente}/buscar/diagnostico") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/buscar/diagnostico
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPacientePorDiagnostico(
             @PathVariable Integer idPaciente,
             @RequestParam String diagnostico) {
@@ -205,7 +205,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico por síntomas
      */
-    @GetMapping("/buscar/sintomas")
+    @GetMapping("/buscar/sintomas") // http://56.125.172.86:8080/api/historial-medico/buscar/sintomas
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPorSintomas(
             @RequestParam String sintoma) {
         List<HistorialMedico> historiales = historialMedicoService.buscarHistorialMedicoPorSintomas(sintoma);
@@ -215,7 +215,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico por tratamiento
      */
-    @GetMapping("/buscar/tratamiento")
+    @GetMapping("/buscar/tratamiento") // http://56.125.172.86:8080/api/historial-medico/buscar/tratamiento
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPorTratamiento(
             @RequestParam String tratamiento) {
         List<HistorialMedico> historiales = 
@@ -226,7 +226,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico por medicamento
      */
-    @GetMapping("/buscar/medicamento")
+    @GetMapping("/buscar/medicamento") // http://56.125.172.86:8080/api/historial-medico/buscar/medicamento
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPorMedicamento(
             @RequestParam String medicamento) {
         List<HistorialMedico> historiales = 
@@ -237,7 +237,7 @@ public class HistorialMedicoController {
     /**
      * Buscar historial médico del paciente por medicamento
      */
-    @GetMapping("/paciente/{idPaciente}/buscar/medicamento")
+    @GetMapping("/paciente/{idPaciente}/buscar/medicamento") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/buscar/medicamento
     public ResponseEntity<List<HistorialMedico>> buscarHistorialMedicoPacientePorMedicamento(
             @PathVariable Integer idPaciente,
             @RequestParam String medicamento) {
@@ -249,7 +249,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con seguimiento
      */
-    @GetMapping("/con-seguimiento")
+    @GetMapping("/con-seguimiento") // http://56.125.172.86:8080/api/historial-medico/con-seguimiento
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConSeguimiento() {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoConSeguimiento();
         return ResponseEntity.ok(historiales);
@@ -258,7 +258,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con seguimiento por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/con-seguimiento")
+    @GetMapping("/paciente/{idPaciente}/con-seguimiento") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/con-seguimiento
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConSeguimientoPorPaciente(
             @PathVariable Integer idPaciente) {
         List<HistorialMedico> historiales = 
@@ -269,7 +269,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con seguimiento pendiente
      */
-    @GetMapping("/seguimiento-pendiente")
+    @GetMapping("/seguimiento-pendiente") // http://56.125.172.86:8080/api/historial-medico/seguimiento-pendiente
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConSeguimientoPendiente() {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoConSeguimientoPendiente();
         return ResponseEntity.ok(historiales);
@@ -278,7 +278,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con seguimiento pendiente por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/seguimiento-pendiente")
+    @GetMapping("/paciente/{idPaciente}/seguimiento-pendiente") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/seguimiento-pendiente
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConSeguimientoPendientePorPaciente(
             @PathVariable Integer idPaciente) {
         List<HistorialMedico> historiales = 
@@ -289,7 +289,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con seguimiento vencido
      */
-    @GetMapping("/seguimiento-vencido")
+    @GetMapping("/seguimiento-vencido") // http://56.125.172.86:8080/api/historial-medico/seguimiento-vencido
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConSeguimientoVencido() {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoConSeguimientoVencido();
         return ResponseEntity.ok(historiales);
@@ -298,7 +298,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por paciente en rango de fechas
      */
-    @GetMapping("/paciente/{idPaciente}/rango-fechas")
+    @GetMapping("/paciente/{idPaciente}/rango-fechas") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/rango-fechas
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorPacienteEnRangoFechas(
             @PathVariable Integer idPaciente,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
@@ -311,7 +311,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico por médico en rango de fechas
      */
-    @GetMapping("/medico/{idMedico}/rango-fechas")
+    @GetMapping("/medico/{idMedico}/rango-fechas") // http://56.125.172.86:8080/api/historial-medico/medico/{idMedico}/rango-fechas
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoPorMedicoEnRangoFechas(
             @PathVariable Integer idMedico,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
@@ -324,7 +324,7 @@ public class HistorialMedicoController {
     /**
      * Contar historial médico por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/contar")
+    @GetMapping("/paciente/{idPaciente}/contar") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/contar
     public ResponseEntity<Long> contarHistorialMedicoPorPaciente(@PathVariable Integer idPaciente) {
         Long count = historialMedicoService.contarHistorialMedicoPorPaciente(idPaciente);
         return ResponseEntity.ok(count);
@@ -333,7 +333,7 @@ public class HistorialMedicoController {
     /**
      * Contar historial médico por médico
      */
-    @GetMapping("/medico/{idMedico}/contar")
+    @GetMapping("/medico/{idMedico}/contar") // http://56.125.172.86:8080/api/historial-medico/medico/{idMedico}/contar
     public ResponseEntity<Long> contarHistorialMedicoPorMedico(@PathVariable Integer idMedico) {
         Long count = historialMedicoService.contarHistorialMedicoPorMedico(idMedico);
         return ResponseEntity.ok(count);
@@ -342,7 +342,7 @@ public class HistorialMedicoController {
     /**
      * Obtener último historial médico por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/ultimo")
+    @GetMapping("/paciente/{idPaciente}/ultimo") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/ultimo
     public ResponseEntity<HistorialMedico> obtenerUltimoHistorialMedicoPorPaciente(
             @PathVariable Integer idPaciente) {
         Optional<HistorialMedico> historial = 
@@ -354,7 +354,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico con observaciones
      */
-    @GetMapping("/con-observaciones")
+    @GetMapping("/con-observaciones") // http://56.125.172.86:8080/api/historial-medico/con-observaciones
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoConObservaciones() {
         List<HistorialMedico> historiales = historialMedicoService.obtenerHistorialMedicoConObservaciones();
         return ResponseEntity.ok(historiales);
@@ -363,7 +363,7 @@ public class HistorialMedicoController {
     /**
      * Obtener historial médico reciente por paciente
      */
-    @GetMapping("/paciente/{idPaciente}/reciente")
+    @GetMapping("/paciente/{idPaciente}/reciente") // http://56.125.172.86:8080/api/historial-medico/paciente/{idPaciente}/reciente
     public ResponseEntity<List<HistorialMedico>> obtenerHistorialMedicoRecientePorPaciente(
             @PathVariable Integer idPaciente,
             @RequestParam(defaultValue = "10") int limite) {

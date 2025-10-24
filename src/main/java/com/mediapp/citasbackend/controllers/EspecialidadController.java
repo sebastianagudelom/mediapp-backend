@@ -27,7 +27,7 @@ public class EspecialidadController {
 
     private final EspecialidadService especialidadService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/especialidades
     @Operation(summary = "Crear nueva especialidad", description = "Registra una nueva especialidad médica en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Especialidad creada exitosamente",
@@ -45,7 +45,7 @@ public class EspecialidadController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/especialidades
     @Operation(summary = "Obtener todas las especialidades", description = "Retorna catálogo completo de especialidades médicas")
     @ApiResponse(responseCode = "200", description = "Lista de especialidades obtenida exitosamente")
     public ResponseEntity<List<Especialidad>> obtenerTodasLasEspecialidades() {
@@ -53,7 +53,7 @@ public class EspecialidadController {
         return ResponseEntity.ok(especialidades);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/especialidades/{id}
     @Operation(summary = "Obtener especialidad por ID", description = "Retorna los detalles de una especialidad específica")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Especialidad encontrada"),
@@ -67,7 +67,7 @@ public class EspecialidadController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/especialidades/{id}
     @Operation(summary = "Actualizar especialidad", description = "Actualiza la información de una especialidad existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Especialidad actualizada exitosamente"),
@@ -86,7 +86,7 @@ public class EspecialidadController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/especialidades/{id}
     @Operation(summary = "Eliminar especialidad", description = "Elimina una especialidad del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Especialidad eliminada exitosamente"),
@@ -106,7 +106,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidad por nombre exacto
      */
-    @GetMapping("/nombre/{nombreEspecialidad}")
+    @GetMapping("/nombre/{nombreEspecialidad}") // http://56.125.172.86:8080/api/especialidades/nombre/{nombreEspecialidad}
     public ResponseEntity<Especialidad> obtenerEspecialidadPorNombre(
             @PathVariable String nombreEspecialidad) {
         Optional<Especialidad> especialidad = especialidadService.obtenerEspecialidadPorNombre(nombreEspecialidad);
@@ -117,7 +117,7 @@ public class EspecialidadController {
     /**
      * Verificar si existe una especialidad por nombre
      */
-    @GetMapping("/existe/nombre/{nombreEspecialidad}")
+    @GetMapping("/existe/nombre/{nombreEspecialidad}") // http://56.125.172.86:8080/api/especialidades/existe/nombre/{nombreEspecialidad}
     public ResponseEntity<Boolean> existeEspecialidadPorNombre(@PathVariable String nombreEspecialidad) {
         boolean existe = especialidadService.existeEspecialidadPorNombre(nombreEspecialidad);
         return ResponseEntity.ok(existe);
@@ -126,7 +126,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidades por estado
      */
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/estado/{estado}") // http://56.125.172.86:8080/api/especialidades/estado/{estado}
     public ResponseEntity<List<Especialidad>> obtenerEspecialidadesPorEstado(
             @PathVariable Especialidad.Estado estado) {
         List<Especialidad> especialidades = especialidadService.obtenerEspecialidadesPorEstado(estado);
@@ -136,7 +136,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidades activas
      */
-    @GetMapping("/activas")
+    @GetMapping("/activas") // http://56.125.172.86:8080/api/especialidades/activas
     public ResponseEntity<List<Especialidad>> obtenerEspecialidadesActivas() {
         List<Especialidad> especialidades = especialidadService.obtenerEspecialidadesActivas();
         return ResponseEntity.ok(especialidades);
@@ -145,7 +145,7 @@ public class EspecialidadController {
     /**
      * Buscar especialidades por nombre (búsqueda parcial)
      */
-    @GetMapping("/buscar")
+    @GetMapping("/buscar") // http://56.125.172.86:8080/api/especialidades/buscar
     public ResponseEntity<List<Especialidad>> buscarEspecialidadesPorNombre(
             @RequestParam String nombre) {
         List<Especialidad> especialidades = especialidadService.buscarEspecialidadesPorNombre(nombre);
@@ -155,7 +155,7 @@ public class EspecialidadController {
     /**
      * Buscar especialidades activas por nombre (búsqueda parcial)
      */
-    @GetMapping("/buscar/activas")
+    @GetMapping("/buscar/activas") // http://56.125.172.86:8080/api/especialidades/buscar/activas
     public ResponseEntity<List<Especialidad>> buscarEspecialidadesActivasPorNombre(
             @RequestParam String nombre) {
         List<Especialidad> especialidades = especialidadService.buscarEspecialidadesActivasPorNombre(nombre);
@@ -165,7 +165,7 @@ public class EspecialidadController {
     /**
      * Buscar especialidades por descripción
      */
-    @GetMapping("/buscar/descripcion")
+    @GetMapping("/buscar/descripcion") // http://56.125.172.86:8080/api/especialidades/buscar/descripcion
     public ResponseEntity<List<Especialidad>> buscarEspecialidadesPorDescripcion(
             @RequestParam String texto) {
         List<Especialidad> especialidades = especialidadService.buscarEspecialidadesPorDescripcion(texto);
@@ -175,7 +175,7 @@ public class EspecialidadController {
     /**
      * Contar especialidades por estado
      */
-    @GetMapping("/contar/estado/{estado}")
+    @GetMapping("/contar/estado/{estado}") // http://56.125.172.86:8080/api/especialidades/contar/estado/{estado}
     public ResponseEntity<Long> contarEspecialidadesPorEstado(@PathVariable Especialidad.Estado estado) {
         Long count = especialidadService.contarEspecialidadesPorEstado(estado);
         return ResponseEntity.ok(count);
@@ -184,7 +184,7 @@ public class EspecialidadController {
     /**
      * Contar especialidades activas
      */
-    @GetMapping("/contar/activas")
+    @GetMapping("/contar/activas") // http://56.125.172.86:8080/api/especialidades/contar/activas
     public ResponseEntity<Long> contarEspecialidadesActivas() {
         Long count = especialidadService.contarEspecialidadesActivas();
         return ResponseEntity.ok(count);
@@ -193,7 +193,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidades ordenadas alfabéticamente
      */
-    @GetMapping("/ordenadas")
+    @GetMapping("/ordenadas") // http://56.125.172.86:8080/api/especialidades/ordenadas
     public ResponseEntity<List<Especialidad>> obtenerEspecialidadesOrdenadas() {
         List<Especialidad> especialidades = especialidadService.obtenerEspecialidadesOrdenadas();
         return ResponseEntity.ok(especialidades);
@@ -202,7 +202,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidades que tienen médicos asociados
      */
-    @GetMapping("/con-medicos")
+    @GetMapping("/con-medicos") // http://56.125.172.86:8080/api/especialidades/con-medicos
     public ResponseEntity<List<Especialidad>> obtenerEspecialidadesConMedicos() {
         List<Especialidad> especialidades = especialidadService.obtenerEspecialidadesConMedicos();
         return ResponseEntity.ok(especialidades);
@@ -211,7 +211,7 @@ public class EspecialidadController {
     /**
      * Obtener especialidades recientes
      */
-    @GetMapping("/recientes")
+    @GetMapping("/recientes") // http://56.125.172.86:8080/api/especialidades/recientes
     public ResponseEntity<List<Especialidad>> obtenerEspecialidadesRecientes() {
         List<Especialidad> especialidades = especialidadService.obtenerEspecialidadesRecientes();
         return ResponseEntity.ok(especialidades);
@@ -220,7 +220,7 @@ public class EspecialidadController {
     /**
      * Activar especialidad
      */
-    @PatchMapping("/{id}/activar")
+    @PatchMapping("/{id}/activar") // http://56.125.172.86:8080/api/especialidades/{id}/activar
     public ResponseEntity<Especialidad> activarEspecialidad(@PathVariable Integer id) {
         try {
             Especialidad especialidad = especialidadService.activarEspecialidad(id);
@@ -233,7 +233,7 @@ public class EspecialidadController {
     /**
      * Desactivar especialidad
      */
-    @PatchMapping("/{id}/desactivar")
+    @PatchMapping("/{id}/desactivar") // http://56.125.172.86:8080/api/especialidades/{id}/desactivar
     public ResponseEntity<Especialidad> desactivarEspecialidad(@PathVariable Integer id) {
         try {
             Especialidad especialidad = especialidadService.desactivarEspecialidad(id);
@@ -246,7 +246,7 @@ public class EspecialidadController {
     /**
      * Verificar si el nombre es único (excluyendo un ID específico)
      */
-    @GetMapping("/nombre-unico")
+    @GetMapping("/nombre-unico") // http://56.125.172.86:8080/api/especialidades/nombre-unico
     public ResponseEntity<Boolean> nombreEsUnico(
             @RequestParam String nombre,
             @RequestParam(required = false) Integer idExcluir) {

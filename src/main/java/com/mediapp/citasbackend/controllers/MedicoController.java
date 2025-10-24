@@ -29,7 +29,7 @@ public class MedicoController {
 
     private final MedicoService medicoService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/medicos
     @Operation(summary = "Crear nuevo médico", description = "Registra un nuevo médico en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Médico creado exitosamente",
@@ -47,7 +47,7 @@ public class MedicoController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/medicos
     @Operation(summary = "Obtener todos los médicos", description = "Retorna listado completo de médicos del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de médicos obtenida exitosamente")
     public ResponseEntity<List<Medico>> obtenerTodosLosMedicos() {
@@ -55,7 +55,7 @@ public class MedicoController {
         return ResponseEntity.ok(medicos);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/medicos/{id}
     @Operation(summary = "Obtener médico por ID", description = "Retorna los detalles de un médico específico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Médico encontrado"),
@@ -69,7 +69,7 @@ public class MedicoController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/medicos/{id}
     @Operation(summary = "Actualizar médico", description = "Actualiza la información de un médico existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Médico actualizado exitosamente"),
@@ -88,7 +88,7 @@ public class MedicoController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/medicos/{id}
     @Operation(summary = "Eliminar médico", description = "Elimina un médico del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Médico eliminado exitosamente"),
@@ -105,7 +105,7 @@ public class MedicoController {
         }
     }
 
-    @GetMapping("/usuario/{idUsuario}")
+    @GetMapping("/usuario/{idUsuario}") // http://56.125.172.86:8080/api/medicos/usuario/{idUsuario}
     @Operation(summary = "Obtener médico por ID de usuario", 
                description = "Retorna el perfil de médico asociado a un usuario")
     @ApiResponses(value = {
@@ -120,7 +120,7 @@ public class MedicoController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/usuario/{idUsuario}/existe")
+    @GetMapping("/usuario/{idUsuario}/existe") // http://56.125.172.86:8080/api/medicos/usuario/{idUsuario}/existe
     @Operation(summary = "Verificar si existe médico por usuario", 
                description = "Verifica si existe un perfil de médico asociado al usuario")
     @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
@@ -131,7 +131,7 @@ public class MedicoController {
         return ResponseEntity.ok(existe);
     }
 
-    @GetMapping("/licencia/{numeroLicencia}")
+    @GetMapping("/licencia/{numeroLicencia}") // http://56.125.172.86:8080/api/medicos/licencia/{numeroLicencia}
     @Operation(summary = "Obtener médico por número de licencia", 
                description = "Busca un médico por su número de licencia profesional")
     @ApiResponses(value = {
@@ -146,7 +146,7 @@ public class MedicoController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/licencia/{numeroLicencia}/existe")
+    @GetMapping("/licencia/{numeroLicencia}/existe") // http://56.125.172.86:8080/api/medicos/licencia/{numeroLicencia}/existe
     @Operation(summary = "Verificar existencia de licencia", 
                description = "Verifica si un número de licencia profesional ya está registrado")
     @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
@@ -157,7 +157,7 @@ public class MedicoController {
         return ResponseEntity.ok(existe);
     }
 
-    @GetMapping("/especialidad/{idEspecialidad}")
+    @GetMapping("/especialidad/{idEspecialidad}") // http://56.125.172.86:8080/api/medicos/especialidad/{idEspecialidad}
     @Operation(summary = "Obtener médicos por especialidad", 
                description = "Retorna todos los médicos de una especialidad específica")
     @ApiResponse(responseCode = "200", description = "Lista de médicos de la especialidad")
@@ -171,7 +171,7 @@ public class MedicoController {
     /**
      * Obtener médicos verificados por especialidad
      */
-    @GetMapping("/especialidad/{idEspecialidad}/verificados")
+    @GetMapping("/especialidad/{idEspecialidad}/verificados") // http://56.125.172.86:8080/api/medicos/especialidad/{idEspecialidad}/verificados
     public ResponseEntity<List<Medico>> obtenerMedicosVerificadosPorEspecialidad(
             @PathVariable Integer idEspecialidad) {
         List<Medico> medicos = medicoService.obtenerMedicosVerificadosPorEspecialidad(idEspecialidad);
@@ -181,7 +181,7 @@ public class MedicoController {
     /**
      * Obtener médicos por estado de verificación
      */
-    @GetMapping("/estado-verificacion/{estadoVerificacion}")
+    @GetMapping("/estado-verificacion/{estadoVerificacion}") // http://56.125.172.86:8080/api/medicos/estado-verificacion/{estadoVerificacion}
     public ResponseEntity<List<Medico>> obtenerMedicosPorEstadoVerificacion(
             @PathVariable Medico.EstadoVerificacion estadoVerificacion) {
         List<Medico> medicos = medicoService.obtenerMedicosPorEstadoVerificacion(estadoVerificacion);
@@ -191,7 +191,7 @@ public class MedicoController {
     /**
      * Obtener médicos verificados
      */
-    @GetMapping("/verificados")
+    @GetMapping("/verificados") // http://56.125.172.86:8080/api/medicos/verificados
     public ResponseEntity<List<Medico>> obtenerMedicosVerificados() {
         List<Medico> medicos = medicoService.obtenerMedicosVerificados();
         return ResponseEntity.ok(medicos);
@@ -200,7 +200,7 @@ public class MedicoController {
     /**
      * Obtener médicos pendientes de verificación
      */
-    @GetMapping("/pendientes-verificacion")
+    @GetMapping("/pendientes-verificacion") // http://56.125.172.86:8080/api/medicos/pendientes-verificacion
     public ResponseEntity<List<Medico>> obtenerMedicosPendientesVerificacion() {
         List<Medico> medicos = medicoService.obtenerMedicosPendientesVerificacion();
         return ResponseEntity.ok(medicos);
@@ -209,7 +209,7 @@ public class MedicoController {
     /**
      * Obtener médicos activos y verificados
      */
-    @GetMapping("/activos-verificados")
+    @GetMapping("/activos-verificados") // http://56.125.172.86:8080/api/medicos/activos-verificados
     public ResponseEntity<List<Medico>> obtenerMedicosActivosVerificados() {
         List<Medico> medicos = medicoService.obtenerMedicosActivosVerificados();
         return ResponseEntity.ok(medicos);
@@ -218,7 +218,7 @@ public class MedicoController {
     /**
      * Obtener médicos por hospital
      */
-    @GetMapping("/hospital/{hospitalAfiliado}")
+    @GetMapping("/hospital/{hospitalAfiliado}") // http://56.125.172.86:8080/api/medicos/hospital/{hospitalAfiliado}
     public ResponseEntity<List<Medico>> obtenerMedicosPorHospital(@PathVariable String hospitalAfiliado) {
         List<Medico> medicos = medicoService.obtenerMedicosPorHospital(hospitalAfiliado);
         return ResponseEntity.ok(medicos);
@@ -227,7 +227,7 @@ public class MedicoController {
     /**
      * Obtener médicos con experiencia mínima
      */
-    @GetMapping("/experiencia-minima/{aniosMinimos}")
+    @GetMapping("/experiencia-minima/{aniosMinimos}") // http://56.125.172.86:8080/api/medicos/experiencia-minima/{aniosMinimos}
     public ResponseEntity<List<Medico>> obtenerMedicosConExperienciaMinima(@PathVariable Integer aniosMinimos) {
         List<Medico> medicos = medicoService.obtenerMedicosConExperienciaMinima(aniosMinimos);
         return ResponseEntity.ok(medicos);
@@ -236,7 +236,7 @@ public class MedicoController {
     /**
      * Obtener médicos por rango de experiencia
      */
-    @GetMapping("/experiencia-rango")
+    @GetMapping("/experiencia-rango") // http://56.125.172.86:8080/api/medicos/experiencia-rango
     public ResponseEntity<List<Medico>> obtenerMedicosPorRangoExperiencia(
             @RequestParam Integer minAnos,
             @RequestParam Integer maxAnos) {
@@ -247,7 +247,7 @@ public class MedicoController {
     /**
      * Obtener médicos con calificación mínima
      */
-    @GetMapping("/calificacion-minima/{calificacionMinima}")
+    @GetMapping("/calificacion-minima/{calificacionMinima}") // http://56.125.172.86:8080/api/medicos/calificacion-minima/{calificacionMinima}
     public ResponseEntity<List<Medico>> obtenerMedicosConCalificacionMinima(
             @PathVariable BigDecimal calificacionMinima) {
         List<Medico> medicos = medicoService.obtenerMedicosConCalificacionMinima(calificacionMinima);
@@ -257,7 +257,7 @@ public class MedicoController {
     /**
      * Obtener médicos mejor calificados
      */
-    @GetMapping("/mejor-calificados")
+    @GetMapping("/mejor-calificados") // http://56.125.172.86:8080/api/medicos/mejor-calificados
     public ResponseEntity<List<Medico>> obtenerMedicosMejorCalificados() {
         List<Medico> medicos = medicoService.obtenerMedicosMejorCalificados();
         return ResponseEntity.ok(medicos);
@@ -266,7 +266,7 @@ public class MedicoController {
     /**
      * Obtener médicos mejor calificados por especialidad
      */
-    @GetMapping("/especialidad/{idEspecialidad}/mejor-calificados")
+    @GetMapping("/especialidad/{idEspecialidad}/mejor-calificados") // http://56.125.172.86:8080/api/medicos/especialidad/{idEspecialidad}/mejor-calificados
     public ResponseEntity<List<Medico>> obtenerMedicosMejorCalificadosPorEspecialidad(
             @PathVariable Integer idEspecialidad) {
         List<Medico> medicos = medicoService.obtenerMedicosMejorCalificadosPorEspecialidad(idEspecialidad);
@@ -276,7 +276,7 @@ public class MedicoController {
     /**
      * Obtener médicos sin calificación
      */
-    @GetMapping("/sin-calificacion")
+    @GetMapping("/sin-calificacion") // http://56.125.172.86:8080/api/medicos/sin-calificacion
     public ResponseEntity<List<Medico>> obtenerMedicosSinCalificacion() {
         List<Medico> medicos = medicoService.obtenerMedicosSinCalificacion();
         return ResponseEntity.ok(medicos);
@@ -285,7 +285,7 @@ public class MedicoController {
     /**
      * Buscar médicos por nombre
      */
-    @GetMapping("/buscar")
+    @GetMapping("/buscar") // http://56.125.172.86:8080/api/medicos/buscar
     public ResponseEntity<List<Medico>> buscarMedicosPorNombre(@RequestParam String nombre) {
         List<Medico> medicos = medicoService.buscarMedicosPorNombre(nombre);
         return ResponseEntity.ok(medicos);
@@ -294,7 +294,7 @@ public class MedicoController {
     /**
      * Buscar médicos activos por nombre
      */
-    @GetMapping("/buscar/activos")
+    @GetMapping("/buscar/activos") // http://56.125.172.86:8080/api/medicos/buscar/activos
     public ResponseEntity<List<Medico>> buscarMedicosActivosPorNombre(@RequestParam String nombre) {
         List<Medico> medicos = medicoService.buscarMedicosActivosPorNombre(nombre);
         return ResponseEntity.ok(medicos);
@@ -303,7 +303,7 @@ public class MedicoController {
     /**
      * Obtener médicos por ciudad
      */
-    @GetMapping("/ciudad/{ciudad}")
+    @GetMapping("/ciudad/{ciudad}") // http://56.125.172.86:8080/api/medicos/ciudad/{ciudad}
     public ResponseEntity<List<Medico>> obtenerMedicosPorCiudad(@PathVariable String ciudad) {
         List<Medico> medicos = medicoService.obtenerMedicosPorCiudad(ciudad);
         return ResponseEntity.ok(medicos);
@@ -312,7 +312,7 @@ public class MedicoController {
     /**
      * Obtener médicos por ciudad y especialidad
      */
-    @GetMapping("/ciudad/{ciudad}/especialidad/{idEspecialidad}")
+    @GetMapping("/ciudad/{ciudad}/especialidad/{idEspecialidad}") // http://56.125.172.86:8080/api/medicos/ciudad/{ciudad}/especialidad/{idEspecialidad}
     public ResponseEntity<List<Medico>> obtenerMedicosPorCiudadYEspecialidad(
             @PathVariable String ciudad,
             @PathVariable Integer idEspecialidad) {
@@ -323,7 +323,7 @@ public class MedicoController {
     /**
      * Contar médicos por especialidad
      */
-    @GetMapping("/especialidad/{idEspecialidad}/contar")
+    @GetMapping("/especialidad/{idEspecialidad}/contar") // http://56.125.172.86:8080/api/medicos/especialidad/{idEspecialidad}/contar
     public ResponseEntity<Long> contarMedicosPorEspecialidad(@PathVariable Integer idEspecialidad) {
         Long count = medicoService.contarMedicosPorEspecialidad(idEspecialidad);
         return ResponseEntity.ok(count);
@@ -332,7 +332,7 @@ public class MedicoController {
     /**
      * Contar médicos verificados
      */
-    @GetMapping("/contar/verificados")
+    @GetMapping("/contar/verificados") // http://56.125.172.86:8080/api/medicos/contar/verificados
     public ResponseEntity<Long> contarMedicosVerificados() {
         Long count = medicoService.contarMedicosVerificados();
         return ResponseEntity.ok(count);
@@ -341,7 +341,7 @@ public class MedicoController {
     /**
      * Contar médicos pendientes
      */
-    @GetMapping("/contar/pendientes")
+    @GetMapping("/contar/pendientes") // http://56.125.172.86:8080/api/medicos/contar/pendientes
     public ResponseEntity<Long> contarMedicosPendientes() {
         Long count = medicoService.contarMedicosPendientes();
         return ResponseEntity.ok(count);
@@ -350,7 +350,7 @@ public class MedicoController {
     /**
      * Obtener médicos recientes
      */
-    @GetMapping("/recientes")
+    @GetMapping("/recientes") // http://56.125.172.86:8080/api/medicos/recientes
     public ResponseEntity<List<Medico>> obtenerMedicosRecientes() {
         List<Medico> medicos = medicoService.obtenerMedicosRecientes();
         return ResponseEntity.ok(medicos);
@@ -359,7 +359,7 @@ public class MedicoController {
     /**
      * Obtener médico por email
      */
-    @GetMapping("/email/{email}")
+    @GetMapping("/email/{email}") // http://56.125.172.86:8080/api/medicos/email/{email}
     public ResponseEntity<Medico> obtenerMedicoPorEmail(@PathVariable String email) {
         Optional<Medico> medico = medicoService.obtenerMedicoPorEmail(email);
         return medico.map(ResponseEntity::ok)
@@ -369,7 +369,7 @@ public class MedicoController {
     /**
      * Obtener médicos con biografía
      */
-    @GetMapping("/con-bio")
+    @GetMapping("/con-bio") // http://56.125.172.86:8080/api/medicos/con-bio
     public ResponseEntity<List<Medico>> obtenerMedicosConBio() {
         List<Medico> medicos = medicoService.obtenerMedicosConBio();
         return ResponseEntity.ok(medicos);
@@ -378,7 +378,7 @@ public class MedicoController {
     /**
      * Obtener médicos disponibles (con calendario)
      */
-    @GetMapping("/disponibles")
+    @GetMapping("/disponibles") // http://56.125.172.86:8080/api/medicos/disponibles
     public ResponseEntity<List<Medico>> obtenerMedicosDisponibles() {
         List<Medico> medicos = medicoService.obtenerMedicosDisponibles();
         return ResponseEntity.ok(medicos);
@@ -387,7 +387,7 @@ public class MedicoController {
     /**
      * Obtener médicos disponibles por especialidad
      */
-    @GetMapping("/disponibles/especialidad/{idEspecialidad}")
+    @GetMapping("/disponibles/especialidad/{idEspecialidad}") // http://56.125.172.86:8080/api/medicos/disponibles/especialidad/{idEspecialidad}
     public ResponseEntity<List<Medico>> obtenerMedicosDisponiblesPorEspecialidad(
             @PathVariable Integer idEspecialidad) {
         List<Medico> medicos = medicoService.obtenerMedicosDisponiblesPorEspecialidad(idEspecialidad);
@@ -397,7 +397,7 @@ public class MedicoController {
     /**
      * Obtener todos los médicos ordenados por calificación
      */
-    @GetMapping("/ordenados/calificacion")
+    @GetMapping("/ordenados/calificacion") // http://56.125.172.86:8080/api/medicos/ordenados/calificacion
     public ResponseEntity<List<Medico>> obtenerTodosLosMedicosOrdenadosPorCalificacion() {
         List<Medico> medicos = medicoService.obtenerTodosLosMedicosOrdenadosPorCalificacion();
         return ResponseEntity.ok(medicos);
@@ -406,7 +406,7 @@ public class MedicoController {
     /**
      * Verificar médico
      */
-    @PatchMapping("/{id}/verificar")
+    @PatchMapping("/{id}/verificar") // http://56.125.172.86:8080/api/medicos/{id}/verificar
     public ResponseEntity<Medico> verificarMedico(@PathVariable Integer id) {
         try {
             Medico medico = medicoService.verificarMedico(id);
@@ -419,7 +419,7 @@ public class MedicoController {
     /**
      * Marcar médico como pendiente
      */
-    @PatchMapping("/{id}/pendiente")
+    @PatchMapping("/{id}/pendiente") // http://56.125.172.86:8080/api/medicos/{id}/pendiente
     public ResponseEntity<Medico> marcarComoPendiente(@PathVariable Integer id) {
         try {
             Medico medico = medicoService.marcarComoPendiente(id);
@@ -432,7 +432,7 @@ public class MedicoController {
     /**
      * Actualizar calificación promedio del médico
      */
-    @PatchMapping("/{id}/calificacion")
+    @PatchMapping("/{id}/calificacion") // http://56.125.172.86:8080/api/medicos/{id}/calificacion
     public ResponseEntity<Medico> actualizarCalificacionPromedio(
             @PathVariable Integer id,
             @RequestBody Map<String, BigDecimal> request) {
@@ -451,7 +451,7 @@ public class MedicoController {
     /**
      * Verificar si la licencia es única (excluyendo un ID específico)
      */
-    @GetMapping("/licencia-unica")
+    @GetMapping("/licencia-unica") // http://56.125.172.86:8080/api/medicos/licencia-unica
     public ResponseEntity<Boolean> licenciaEsUnica(
             @RequestParam String numeroLicencia,
             @RequestParam(required = false) Integer idExcluir) {

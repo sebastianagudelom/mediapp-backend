@@ -30,7 +30,7 @@ public class NotificacionController {
 
     private final NotificacionService notificacionService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/notificaciones
     @Operation(summary = "Crear nueva notificación", 
                description = "Crea una nueva notificación para un usuario")
     @ApiResponses(value = {
@@ -49,7 +49,7 @@ public class NotificacionController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/notificaciones
     @Operation(summary = "Obtener todas las notificaciones", 
                description = "Retorna listado completo de notificaciones del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de notificaciones obtenida exitosamente")
@@ -58,7 +58,7 @@ public class NotificacionController {
         return ResponseEntity.ok(notificaciones);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/notificaciones/{id}
     @Operation(summary = "Obtener notificación por ID", 
                description = "Retorna los detalles de una notificación específica")
     @ApiResponses(value = {
@@ -73,7 +73,7 @@ public class NotificacionController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/notificaciones/{id}
     @Operation(summary = "Actualizar notificación", 
                description = "Actualiza una notificación existente (ej: marcar como leída)")
     @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class NotificacionController {
     /**
      * Eliminar una notificación
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/notificaciones/{id}
     public ResponseEntity<Void> eliminarNotificacion(@PathVariable Integer id) {
         try {
             notificacionService.eliminarNotificacion(id);
@@ -109,7 +109,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por usuario
      */
-    @GetMapping("/usuario/{idUsuario}")
+    @GetMapping("/usuario/{idUsuario}") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorUsuario(@PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesPorUsuarioId(idUsuario);
         return ResponseEntity.ok(notificaciones);
@@ -118,7 +118,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por usuario ordenadas
      */
-    @GetMapping("/usuario/{idUsuario}/ordenadas")
+    @GetMapping("/usuario/{idUsuario}/ordenadas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/ordenadas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorUsuarioOrdenadas(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesPorUsuarioOrdenadas(idUsuario);
@@ -128,7 +128,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones no leídas por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/no-leidas")
+    @GetMapping("/usuario/{idUsuario}/no-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/no-leidas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesNoLeidasPorUsuario(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesNoLeidasPorUsuario(idUsuario);
@@ -138,7 +138,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones leídas por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/leidas")
+    @GetMapping("/usuario/{idUsuario}/leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/leidas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesLeidasPorUsuario(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesLeidasPorUsuario(idUsuario);
@@ -148,7 +148,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por estado de lectura
      */
-    @GetMapping("/estado-lectura/{leida}")
+    @GetMapping("/estado-lectura/{leida}") // http://56.125.172.86:8080/api/notificaciones/estado-lectura/{leida}
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorEstadoLectura(
             @PathVariable Boolean leida) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesPorEstadoLectura(leida);
@@ -158,7 +158,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por usuario y estado de lectura
      */
-    @GetMapping("/usuario/{idUsuario}/estado-lectura/{leida}")
+    @GetMapping("/usuario/{idUsuario}/estado-lectura/{leida}") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/estado-lectura/{leida}
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorUsuarioYEstadoLectura(
             @PathVariable Integer idUsuario,
             @PathVariable Boolean leida) {
@@ -170,7 +170,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por tipo
      */
-    @GetMapping("/tipo/{tipo}")
+    @GetMapping("/tipo/{tipo}") // http://56.125.172.86:8080/api/notificaciones/tipo/{tipo}
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorTipo(
             @PathVariable Notificacion.TipoNotificacion tipo) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesPorTipo(tipo);
@@ -180,7 +180,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por usuario y tipo
      */
-    @GetMapping("/usuario/{idUsuario}/tipo/{tipo}")
+    @GetMapping("/usuario/{idUsuario}/tipo/{tipo}") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/tipo/{tipo}
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorUsuarioYTipo(
             @PathVariable Integer idUsuario,
             @PathVariable Notificacion.TipoNotificacion tipo) {
@@ -191,7 +191,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones no leídas por usuario y tipo
      */
-    @GetMapping("/usuario/{idUsuario}/tipo/{tipo}/no-leidas")
+    @GetMapping("/usuario/{idUsuario}/tipo/{tipo}/no-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/tipo/{tipo}/no-leidas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesNoLeidasPorUsuarioYTipo(
             @PathVariable Integer idUsuario,
             @PathVariable Notificacion.TipoNotificacion tipo) {
@@ -203,7 +203,7 @@ public class NotificacionController {
     /**
      * Contar notificaciones no leídas por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/contar/no-leidas")
+    @GetMapping("/usuario/{idUsuario}/contar/no-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/contar/no-leidas
     public ResponseEntity<Long> contarNotificacionesNoLeidasPorUsuario(@PathVariable Integer idUsuario) {
         Long count = notificacionService.contarNotificacionesNoLeidasPorUsuario(idUsuario);
         return ResponseEntity.ok(count);
@@ -212,7 +212,7 @@ public class NotificacionController {
     /**
      * Contar notificaciones por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/contar")
+    @GetMapping("/usuario/{idUsuario}/contar") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/contar
     public ResponseEntity<Long> contarNotificacionesPorUsuario(@PathVariable Integer idUsuario) {
         Long count = notificacionService.contarNotificacionesPorUsuario(idUsuario);
         return ResponseEntity.ok(count);
@@ -221,7 +221,7 @@ public class NotificacionController {
     /**
      * Obtener distribución de notificaciones por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/distribucion")
+    @GetMapping("/usuario/{idUsuario}/distribucion") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/distribucion
     public ResponseEntity<Map<Notificacion.TipoNotificacion, Long>> obtenerDistribucionNotificacionesPorUsuario(
             @PathVariable Integer idUsuario) {
         Map<Notificacion.TipoNotificacion, Long> distribucion = 
@@ -232,7 +232,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones en rango de fechas
      */
-    @GetMapping("/rango-fechas")
+    @GetMapping("/rango-fechas") // http://56.125.172.86:8080/api/notificaciones/rango-fechas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesEnRangoFechas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
@@ -244,7 +244,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones por usuario en rango de fechas
      */
-    @GetMapping("/usuario/{idUsuario}/rango-fechas")
+    @GetMapping("/usuario/{idUsuario}/rango-fechas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/rango-fechas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesPorUsuarioEnRangoFechas(
             @PathVariable Integer idUsuario,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -257,7 +257,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones recientes por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/recientes")
+    @GetMapping("/usuario/{idUsuario}/recientes") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/recientes
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesRecientesPorUsuario(
             @PathVariable Integer idUsuario,
             @RequestParam(defaultValue = "24") int horas) {
@@ -269,7 +269,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones recientes no leídas por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/recientes/no-leidas")
+    @GetMapping("/usuario/{idUsuario}/recientes/no-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/recientes/no-leidas
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesRecientesNoLeidasPorUsuario(
             @PathVariable Integer idUsuario,
             @RequestParam(defaultValue = "24") int horas) {
@@ -281,7 +281,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones del día por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/del-dia")
+    @GetMapping("/usuario/{idUsuario}/del-dia") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/del-dia
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesDelDiaPorUsuario(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesDelDiaPorUsuario(idUsuario);
@@ -291,7 +291,7 @@ public class NotificacionController {
     /**
      * Obtener recordatorios pendientes
      */
-    @GetMapping("/recordatorios-pendientes")
+    @GetMapping("/recordatorios-pendientes") // http://56.125.172.86:8080/api/notificaciones/recordatorios-pendientes
     public ResponseEntity<List<Notificacion>> obtenerRecordatoriosPendientes() {
         List<Notificacion> notificaciones = notificacionService.obtenerRecordatoriosPendientes();
         return ResponseEntity.ok(notificaciones);
@@ -300,7 +300,7 @@ public class NotificacionController {
     /**
      * Obtener recordatorios pendientes por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/recordatorios-pendientes")
+    @GetMapping("/usuario/{idUsuario}/recordatorios-pendientes") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/recordatorios-pendientes
     public ResponseEntity<List<Notificacion>> obtenerRecordatoriosPendientesPorUsuario(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerRecordatoriosPendientesPorUsuario(idUsuario);
@@ -310,7 +310,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones con enlace
      */
-    @GetMapping("/con-enlace")
+    @GetMapping("/con-enlace") // http://56.125.172.86:8080/api/notificaciones/con-enlace
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesConEnlace() {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesConEnlace();
         return ResponseEntity.ok(notificaciones);
@@ -319,7 +319,7 @@ public class NotificacionController {
     /**
      * Obtener notificaciones con enlace por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/con-enlace")
+    @GetMapping("/usuario/{idUsuario}/con-enlace") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/con-enlace
     public ResponseEntity<List<Notificacion>> obtenerNotificacionesConEnlacePorUsuario(
             @PathVariable Integer idUsuario) {
         List<Notificacion> notificaciones = notificacionService.obtenerNotificacionesConEnlacePorUsuario(idUsuario);
@@ -329,7 +329,7 @@ public class NotificacionController {
     /**
      * Obtener últimas notificaciones por usuario
      */
-    @GetMapping("/usuario/{idUsuario}/ultimas")
+    @GetMapping("/usuario/{idUsuario}/ultimas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/ultimas
     public ResponseEntity<List<Notificacion>> obtenerUltimasNotificacionesPorUsuario(
             @PathVariable Integer idUsuario,
             @RequestParam(defaultValue = "10") int limite) {
@@ -341,7 +341,7 @@ public class NotificacionController {
     /**
      * Marcar notificación como leída
      */
-    @PatchMapping("/{id}/marcar-leida")
+    @PatchMapping("/{id}/marcar-leida") // http://56.125.172.86:8080/api/notificaciones/{id}/marcar-leida
     public ResponseEntity<Notificacion> marcarComoLeida(@PathVariable Integer id) {
         try {
             Notificacion notificacion = notificacionService.marcarComoLeida(id);
@@ -354,7 +354,7 @@ public class NotificacionController {
     /**
      * Marcar todas las notificaciones como leídas por usuario
      */
-    @PatchMapping("/usuario/{idUsuario}/marcar-todas-leidas")
+    @PatchMapping("/usuario/{idUsuario}/marcar-todas-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/marcar-todas-leidas
     public ResponseEntity<Void> marcarTodasComoLeidasPorUsuario(@PathVariable Integer idUsuario) {
         try {
             notificacionService.marcarTodasComoLeidasPorUsuario(idUsuario);
@@ -367,7 +367,7 @@ public class NotificacionController {
     /**
      * Marcar como leídas por usuario y tipo
      */
-    @PatchMapping("/usuario/{idUsuario}/tipo/{tipo}/marcar-leidas")
+    @PatchMapping("/usuario/{idUsuario}/tipo/{tipo}/marcar-leidas") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/tipo/{tipo}/marcar-leidas
     public ResponseEntity<Void> marcarComoLeidasPorUsuarioYTipo(
             @PathVariable Integer idUsuario,
             @PathVariable Notificacion.TipoNotificacion tipo) {
@@ -382,7 +382,7 @@ public class NotificacionController {
     /**
      * Eliminar notificaciones antiguas (días)
      */
-    @DeleteMapping("/antiguas/{dias}")
+    @DeleteMapping("/antiguas/{dias}") // http://56.125.172.86:8080/api/notificaciones/antiguas/{dias}
     public ResponseEntity<Void> eliminarNotificacionesAntiguas(@PathVariable int dias) {
         try {
             notificacionService.eliminarNotificacionesAntiguas(dias);
@@ -395,7 +395,7 @@ public class NotificacionController {
     /**
      * Eliminar notificaciones leídas antiguas por usuario
      */
-    @DeleteMapping("/usuario/{idUsuario}/leidas-antiguas/{dias}")
+    @DeleteMapping("/usuario/{idUsuario}/leidas-antiguas/{dias}") // http://56.125.172.86:8080/api/notificaciones/usuario/{idUsuario}/leidas-antiguas/{dias}
     public ResponseEntity<Void> eliminarNotificacionesLeidasAntiguasPorUsuario(
             @PathVariable Integer idUsuario,
             @PathVariable int dias) {

@@ -27,7 +27,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping
+    @PostMapping // http://56.125.172.86:8080/api/usuarios
     @Operation(summary = "Crear nuevo usuario", description = "Registra un nuevo usuario en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
@@ -45,7 +45,7 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping
+    @GetMapping // http://56.125.172.86:8080/api/usuarios
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna listado completo de usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
@@ -53,7 +53,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // http://56.125.172.86:8080/api/usuarios/{id}
     @Operation(summary = "Obtener usuario por ID", description = "Retorna los detalles de un usuario específico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -67,7 +67,7 @@ public class UsuarioController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // http://56.125.172.86:8080/api/usuarios/{id}
     @Operation(summary = "Actualizar usuario", description = "Actualiza la información de un usuario existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
@@ -86,7 +86,7 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // http://56.125.172.86:8080/api/usuarios/{id}
     @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Usuario eliminado exitosamente"),
@@ -103,7 +103,7 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/email/{email}") // http://56.125.172.86:8080/api/usuarios/email/{email}
     @Operation(summary = "Obtener usuario por email", description = "Busca un usuario por su dirección de correo electrónico")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -117,7 +117,7 @@ public class UsuarioController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/email/existe/{email}")
+    @GetMapping("/email/existe/{email}") // http://56.125.172.86:8080/api/usuarios/email/existe/{email}
     @Operation(summary = "Verificar existencia de email", description = "Verifica si un email ya está registrado en el sistema")
     @ApiResponse(responseCode = "200", description = "Resultado de la verificación")
     public ResponseEntity<Boolean> existeEmail(
@@ -130,7 +130,7 @@ public class UsuarioController {
     /**
      * Obtener usuario por teléfono
      */
-    @GetMapping("/telefono/{telefono}")
+    @GetMapping("/telefono/{telefono}") // http://56.125.172.86:8080/api/usuarios/telefono/{telefono}
     public ResponseEntity<Usuario> obtenerUsuarioPorTelefono(@PathVariable String telefono) {
         Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorTelefono(telefono);
         return usuario.map(ResponseEntity::ok)
@@ -140,7 +140,7 @@ public class UsuarioController {
     /**
      * Verificar si existe un teléfono
      */
-    @GetMapping("/telefono/existe/{telefono}")
+    @GetMapping("/telefono/existe/{telefono}") // http://56.125.172.86:8080/api/usuarios/telefono/existe/{telefono}
     public ResponseEntity<Boolean> existeTelefono(@PathVariable String telefono) {
         boolean existe = usuarioService.existeTelefono(telefono);
         return ResponseEntity.ok(existe);
@@ -149,7 +149,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios por tipo
      */
-    @GetMapping("/tipo/{tipoUsuario}")
+    @GetMapping("/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/tipo/{tipoUsuario}
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorTipo(tipoUsuario);
@@ -159,7 +159,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios por estado
      */
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/estado/{estado}") // http://56.125.172.86:8080/api/usuarios/estado/{estado}
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorEstado(
             @PathVariable Usuario.Estado estado) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorEstado(estado);
@@ -169,7 +169,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios por tipo y estado
      */
-    @GetMapping("/tipo/{tipoUsuario}/estado/{estado}")
+    @GetMapping("/tipo/{tipoUsuario}/estado/{estado}") // http://56.125.172.86:8080/api/usuarios/tipo/{tipoUsuario}/estado/{estado}
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorTipoYEstado(
             @PathVariable Usuario.TipoUsuario tipoUsuario,
             @PathVariable Usuario.Estado estado) {
@@ -180,7 +180,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios activos por tipo
      */
-    @GetMapping("/activos/tipo/{tipoUsuario}")
+    @GetMapping("/activos/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/activos/tipo/{tipoUsuario}
     public ResponseEntity<List<Usuario>> obtenerUsuariosActivosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosActivosPorTipo(tipoUsuario);
@@ -190,7 +190,7 @@ public class UsuarioController {
     /**
      * Obtener médicos activos
      */
-    @GetMapping("/medicos/activos")
+    @GetMapping("/medicos/activos") // http://56.125.172.86:8080/api/usuarios/medicos/activos
     public ResponseEntity<List<Usuario>> obtenerMedicosActivos() {
         List<Usuario> medicos = usuarioService.obtenerMedicosActivos();
         return ResponseEntity.ok(medicos);
@@ -199,7 +199,7 @@ public class UsuarioController {
     /**
      * Obtener pacientes activos
      */
-    @GetMapping("/pacientes/activos")
+    @GetMapping("/pacientes/activos") // http://56.125.172.86:8080/api/usuarios/pacientes/activos
     public ResponseEntity<List<Usuario>> obtenerPacientesActivos() {
         List<Usuario> pacientes = usuarioService.obtenerPacientesActivos();
         return ResponseEntity.ok(pacientes);
@@ -208,7 +208,7 @@ public class UsuarioController {
     /**
      * Buscar usuarios por nombre o apellido
      */
-    @GetMapping("/buscar")
+    @GetMapping("/buscar") // http://56.125.172.86:8080/api/usuarios/buscar?busqueda={texto}
     public ResponseEntity<List<Usuario>> buscarUsuariosPorNombreOApellido(
             @RequestParam String busqueda) {
         List<Usuario> usuarios = usuarioService.buscarUsuariosPorNombreOApellido(busqueda);
@@ -218,7 +218,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios por ciudad
      */
-    @GetMapping("/ciudad/{ciudad}")
+    @GetMapping("/ciudad/{ciudad}") // http://56.125.172.86:8080/api/usuarios/ciudad/{ciudad}
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorCiudad(@PathVariable String ciudad) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorCiudad(ciudad);
         return ResponseEntity.ok(usuarios);
@@ -227,7 +227,7 @@ public class UsuarioController {
     /**
      * Obtener usuarios por país
      */
-    @GetMapping("/pais/{pais}")
+    @GetMapping("/pais/{pais}") // http://56.125.172.86:8080/api/usuarios/pais/{pais}
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorPais(@PathVariable String pais) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorPais(pais);
         return ResponseEntity.ok(usuarios);
@@ -236,7 +236,7 @@ public class UsuarioController {
     /**
      * Contar usuarios por tipo
      */
-    @GetMapping("/contar/tipo/{tipoUsuario}")
+    @GetMapping("/contar/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/contar/tipo/{tipoUsuario}
     public ResponseEntity<Long> contarUsuariosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         Long count = usuarioService.contarUsuariosPorTipo(tipoUsuario);
@@ -246,7 +246,7 @@ public class UsuarioController {
     /**
      * Contar usuarios activos
      */
-    @GetMapping("/contar/activos")
+    @GetMapping("/contar/activos") // http://56.125.172.86:8080/api/usuarios/contar/activos
     public ResponseEntity<Long> contarUsuariosActivos() {
         Long count = usuarioService.contarUsuariosActivos();
         return ResponseEntity.ok(count);
@@ -255,7 +255,7 @@ public class UsuarioController {
     /**
      * Activar usuario
      */
-    @PatchMapping("/{id}/activar")
+    @PatchMapping("/{id}/activar") // http://56.125.172.86:8080/api/usuarios/{id}/activar
     public ResponseEntity<Usuario> activarUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.activarUsuario(id);
@@ -268,7 +268,7 @@ public class UsuarioController {
     /**
      * Desactivar usuario
      */
-    @PatchMapping("/{id}/desactivar")
+    @PatchMapping("/{id}/desactivar") // http://56.125.172.86:8080/api/usuarios/{id}/desactivar
     public ResponseEntity<Usuario> desactivarUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.desactivarUsuario(id);
@@ -281,7 +281,7 @@ public class UsuarioController {
     /**
      * Bloquear usuario
      */
-    @PatchMapping("/{id}/bloquear")
+    @PatchMapping("/{id}/bloquear") // http://56.125.172.86:8080/api/usuarios/{id}/bloquear
     public ResponseEntity<Usuario> bloquearUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.bloquearUsuario(id);
