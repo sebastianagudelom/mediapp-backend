@@ -7,7 +7,6 @@ import com.mediapp.citasbackend.services.interfaces.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,26 +29,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(
         summary = "Registrar nuevo usuario",
-        description = "Crea un nuevo usuario en el sistema con rol de PACIENTE o MEDICO. Retorna tokens de acceso y refresh.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Datos del usuario a registrar",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = RegisterRequestDTO.class),
-                examples = @ExampleObject(
-                    name = "Ejemplo de registro",
-                    value = """
-                        {
-                          "email": "usuario@ejemplo.com",
-                          "password": "Password123!",
-                          "nombreCompleto": "Juan Pérez",
-                          "rol": "PACIENTE"
-                        }
-                        """
-                )
-            )
-        )
+        description = "Crea un nuevo usuario en el sistema. Puede ser PACIENTE, MEDICO o ADMIN. Retorna tokens JWT de acceso y refresh."
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -57,17 +37,7 @@ public class AuthController {
             description = "Usuario registrado exitosamente",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = AuthResponseDTO.class),
-                examples = @ExampleObject(
-                    value = """
-                        {
-                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "tokenType": "Bearer",
-                          "expiresIn": 3600
-                        }
-                        """
-                )
+                schema = @Schema(implementation = AuthResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -84,24 +54,7 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(
         summary = "Iniciar sesión",
-        description = "Autentica un usuario con email y contraseña. Retorna tokens JWT de acceso y refresh para autenticación.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Credenciales de inicio de sesión",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = LoginRequestDTO.class),
-                examples = @ExampleObject(
-                    name = "Ejemplo de login",
-                    value = """
-                        {
-                          "email": "usuario@ejemplo.com",
-                          "password": "Password123!"
-                        }
-                        """
-                )
-            )
-        )
+        description = "Autentica un usuario con email y contraseña. Retorna tokens JWT de acceso y refresh para autenticación."
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -109,17 +62,7 @@ public class AuthController {
             description = "Autenticación exitosa",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = AuthResponseDTO.class),
-                examples = @ExampleObject(
-                    value = """
-                        {
-                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "tokenType": "Bearer",
-                          "expiresIn": 3600
-                        }
-                        """
-                )
+                schema = @Schema(implementation = AuthResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -145,17 +88,7 @@ public class AuthController {
             description = "Token refrescado exitosamente",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = AuthResponseDTO.class),
-                examples = @ExampleObject(
-                    value = """
-                        {
-                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                          "tokenType": "Bearer",
-                          "expiresIn": 3600
-                        }
-                        """
-                )
+                schema = @Schema(implementation = AuthResponseDTO.class)
             )
         ),
         @ApiResponse(
