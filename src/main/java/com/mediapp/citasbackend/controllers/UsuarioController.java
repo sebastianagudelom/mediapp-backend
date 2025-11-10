@@ -18,6 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+// ✅ AGREGAR ESTA ANOTACIÓN
+@CrossOrigin(
+    origins = {
+        "http://localhost:4200",
+        "http://127.0.0.1:4200",
+        "http://56.125.172.86:4200"
+    },
+    allowCredentials = "true",
+    allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS}
+)
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
@@ -127,49 +138,34 @@ public class UsuarioController {
         return ResponseEntity.ok(existe);
     }
 
-    /**
-     * Obtener usuario por teléfono
-     */
-    @GetMapping("/telefono/{telefono}") // http://56.125.172.86:8080/api/usuarios/telefono/{telefono}
+    @GetMapping("/telefono/{telefono}")
     public ResponseEntity<Usuario> obtenerUsuarioPorTelefono(@PathVariable String telefono) {
         Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorTelefono(telefono);
         return usuario.map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Verificar si existe un teléfono
-     */
-    @GetMapping("/telefono/existe/{telefono}") // http://56.125.172.86:8080/api/usuarios/telefono/existe/{telefono}
+    @GetMapping("/telefono/existe/{telefono}")
     public ResponseEntity<Boolean> existeTelefono(@PathVariable String telefono) {
         boolean existe = usuarioService.existeTelefono(telefono);
         return ResponseEntity.ok(existe);
     }
 
-    /**
-     * Obtener usuarios por tipo
-     */
-    @GetMapping("/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/tipo/{tipoUsuario}
+    @GetMapping("/tipo/{tipoUsuario}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorTipo(tipoUsuario);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuarios por estado
-     */
-    @GetMapping("/estado/{estado}") // http://56.125.172.86:8080/api/usuarios/estado/{estado}
+    @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorEstado(
             @PathVariable Usuario.Estado estado) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorEstado(estado);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuarios por tipo y estado
-     */
-    @GetMapping("/tipo/{tipoUsuario}/estado/{estado}") // http://56.125.172.86:8080/api/usuarios/tipo/{tipoUsuario}/estado/{estado}
+    @GetMapping("/tipo/{tipoUsuario}/estado/{estado}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorTipoYEstado(
             @PathVariable Usuario.TipoUsuario tipoUsuario,
             @PathVariable Usuario.Estado estado) {
@@ -177,85 +173,58 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuarios activos por tipo
-     */
-    @GetMapping("/activos/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/activos/tipo/{tipoUsuario}
+    @GetMapping("/activos/tipo/{tipoUsuario}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosActivosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosActivosPorTipo(tipoUsuario);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener médicos activos
-     */
-    @GetMapping("/medicos/activos") // http://56.125.172.86:8080/api/usuarios/medicos/activos
+    @GetMapping("/medicos/activos")
     public ResponseEntity<List<Usuario>> obtenerMedicosActivos() {
         List<Usuario> medicos = usuarioService.obtenerMedicosActivos();
         return ResponseEntity.ok(medicos);
     }
 
-    /**
-     * Obtener pacientes activos
-     */
-    @GetMapping("/pacientes/activos") // http://56.125.172.86:8080/api/usuarios/pacientes/activos
+    @GetMapping("/pacientes/activos")
     public ResponseEntity<List<Usuario>> obtenerPacientesActivos() {
         List<Usuario> pacientes = usuarioService.obtenerPacientesActivos();
         return ResponseEntity.ok(pacientes);
     }
 
-    /**
-     * Buscar usuarios por nombre o apellido
-     */
-    @GetMapping("/buscar") // http://56.125.172.86:8080/api/usuarios/buscar?busqueda={texto}
+    @GetMapping("/buscar")
     public ResponseEntity<List<Usuario>> buscarUsuariosPorNombreOApellido(
             @RequestParam String busqueda) {
         List<Usuario> usuarios = usuarioService.buscarUsuariosPorNombreOApellido(busqueda);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuarios por ciudad
-     */
-    @GetMapping("/ciudad/{ciudad}") // http://56.125.172.86:8080/api/usuarios/ciudad/{ciudad}
+    @GetMapping("/ciudad/{ciudad}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorCiudad(@PathVariable String ciudad) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorCiudad(ciudad);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Obtener usuarios por país
-     */
-    @GetMapping("/pais/{pais}") // http://56.125.172.86:8080/api/usuarios/pais/{pais}
+    @GetMapping("/pais/{pais}")
     public ResponseEntity<List<Usuario>> obtenerUsuariosPorPais(@PathVariable String pais) {
         List<Usuario> usuarios = usuarioService.obtenerUsuariosPorPais(pais);
         return ResponseEntity.ok(usuarios);
     }
 
-    /**
-     * Contar usuarios por tipo
-     */
-    @GetMapping("/contar/tipo/{tipoUsuario}") // http://56.125.172.86:8080/api/usuarios/contar/tipo/{tipoUsuario}
+    @GetMapping("/contar/tipo/{tipoUsuario}")
     public ResponseEntity<Long> contarUsuariosPorTipo(
             @PathVariable Usuario.TipoUsuario tipoUsuario) {
         Long count = usuarioService.contarUsuariosPorTipo(tipoUsuario);
         return ResponseEntity.ok(count);
     }
 
-    /**
-     * Contar usuarios activos
-     */
-    @GetMapping("/contar/activos") // http://56.125.172.86:8080/api/usuarios/contar/activos
+    @GetMapping("/contar/activos")
     public ResponseEntity<Long> contarUsuariosActivos() {
         Long count = usuarioService.contarUsuariosActivos();
         return ResponseEntity.ok(count);
     }
 
-    /**
-     * Activar usuario
-     */
-    @PatchMapping("/{id}/activar") // http://56.125.172.86:8080/api/usuarios/{id}/activar
+    @PatchMapping("/{id}/activar")
     public ResponseEntity<Usuario> activarUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.activarUsuario(id);
@@ -265,10 +234,7 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Desactivar usuario
-     */
-    @PatchMapping("/{id}/desactivar") // http://56.125.172.86:8080/api/usuarios/{id}/desactivar
+    @PatchMapping("/{id}/desactivar")
     public ResponseEntity<Usuario> desactivarUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.desactivarUsuario(id);
@@ -278,10 +244,7 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Bloquear usuario
-     */
-    @PatchMapping("/{id}/bloquear") // http://56.125.172.86:8080/api/usuarios/{id}/bloquear
+    @PatchMapping("/{id}/bloquear")
     public ResponseEntity<Usuario> bloquearUsuario(@PathVariable Integer id) {
         try {
             Usuario usuario = usuarioService.bloquearUsuario(id);
