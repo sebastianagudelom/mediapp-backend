@@ -22,7 +22,7 @@ echo ""
 echo "📦 Paso 1: Compilando el proyecto con Maven..."
 ./mvnw clean package -DskipTests
 
-if [ ! -f "target/${JAR_NAME}" ]; then
+if [ ! -f "target/citas-backend-0.0.1-SNAPSHOT.jar" ]; then
     echo "❌ Error: No se encontró el archivo JAR compilado"
     exit 1
 fi
@@ -34,8 +34,8 @@ echo "📤 Paso 2: Subiendo JAR a VPS..."
 # Crear directorio en VPS si no existe
 ssh -i ${VPS_KEY} ${VPS_USER}@${VPS_HOST} "sudo mkdir -p ${VPS_PATH}"
 
-# Copiar JAR al VPS (renombrando a app.jar)
-scp -i ${VPS_KEY} target/citas-backend-0.0.1-SNAPSHOT.jar ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/${JAR_NAME}
+# Copiar JAR al home del usuario primero (para evitar problemas de permisos)
+scp -i ${VPS_KEY} target/citas-backend-0.0.1-SNAPSHOT.jar ${VPS_USER}@${VPS_HOST}:~/app.jar
 
 echo "✅ Archivo subido exitosamente!"
 echo ""
@@ -43,13 +43,17 @@ echo "🔄 Paso 3: Reiniciando servicio en VPS..."
 
 # Ejecutar comandos en VPS para reiniciar el servicio
 ssh -i ${VPS_KEY} ${VPS_USER}@${VPS_HOST} << 'ENDSSH'
-cd /opt/citas
-
 # Detener el servicio si está corriendo
 if systemctl is-active --quiet citas; then
     echo "Deteniendo servicio..."
     sudo systemctl stop citas
 fi
+
+# Mover el archivo del home al directorio final con permisos correctos
+echo "Moviendo archivo a /opt/citas..."
+sudo mv ~/app.jar /opt/citas/app.jar
+sudo chown citasuser:citasuser /opt/citas/app.jar
+sudo chmod 644 /opt/citas/app.jar
 
 # Reiniciar el servicio
 echo "Iniciando servicio..."
